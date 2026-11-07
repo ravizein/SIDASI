@@ -160,7 +160,7 @@ const DEFAULT_DATA = {
 // Storage keys
 const STORAGE_KEY = "SIDASI_MTS_ALFADLLIYAH_DATA";
 const LEGACY_STORAGE_KEY = "SIM_SISWA_MTS_ALFADLLIYAH_DATA";
-const CLEAN_FLAG = "SIDASI_CLEAN_INIT_2026_V5_CLEARED";
+const CLEAN_FLAG = "SIDASI_CLEAN_INIT_2026_V6_ADMIN_ONLY";
 
 function getAppData() {
   // Bersihkan seluruh data lama / cache demonstrasi saat versi bersih diaktifkan
