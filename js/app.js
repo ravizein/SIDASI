@@ -3463,18 +3463,8 @@ function printOfficialMutationSK() {
 
       <!-- Tanda Tangan & Legalisasi Stempel -->
       <div class="mt-12 flex justify-between items-end font-sans text-xs">
-        <div class="text-center w-52">
-          <p>Verifikasi Kelengkapan,</p>
-          <p class="font-bold">Kepala Tata Usaha</p>
-          <div class="h-20 flex items-center justify-center text-gray-400 italic text-[10px]">
-            [Tanda Tangan & Paraf]
-          </div>
-          <p class="font-bold underline uppercase">${mut.verifikatorTU || appData.institution.kepalaTU || 'Hj. Siti Rahmawati, S.Pd'}</p>
-          <p class="text-[10px] text-gray-600">NIP. ${appData.institution.nipTU || '197804122005012004'}</p>
-        </div>
-
         <div class="text-center w-56">
-          <p>${appData.institution.titimangsaKota || appData.institution.kota || 'Singaparna'}, ${mut.tanggalSurat || mut.tanggal || appData.institution.tanggalRapor}</p>
+          <p>Mengetahui,</p>
           <p class="font-bold">Kepala Madrasah,</p>
           
           <div class="h-20 flex items-center justify-center text-gray-400 italic text-[10px]">
@@ -3482,6 +3472,16 @@ function printOfficialMutationSK() {
           </div>
           <p class="font-bold underline uppercase">${mut.pejabatPenandatangan || appData.institution.kepalaMadrasah || 'Drs. H. Ahmad Fadlli, M.Pd.I'}</p>
           <p class="text-[10px] text-gray-600">NIP. ${appData.institution.nipKepala || '196908151994031002'}</p>
+        </div>
+
+        <div class="text-center w-56">
+          <p>${appData.institution.titimangsaKota || appData.institution.kota || 'Singaparna'}, ${mut.tanggalSurat || mut.tanggal || appData.institution.tanggalRapor}</p>
+          <p class="font-bold">Kepala Tata Usaha,</p>
+          <div class="h-20 flex items-center justify-center text-gray-400 italic text-[10px]">
+            [Tanda Tangan & Paraf]
+          </div>
+          <p class="font-bold underline uppercase">${mut.verifikatorTU || appData.institution.kepalaTU || 'Hj. Siti Rahmawati, S.Pd'}</p>
+          <p class="text-[10px] text-gray-600">NIP. ${appData.institution.nipTU || '197804122005012004'}</p>
         </div>
       </div>
 
@@ -4224,18 +4224,19 @@ function printRekapBeasiswaA4() {
       </table>
 
       <div class="mt-8 flex justify-between items-end text-xs">
-        <div class="text-center w-48">
-          <p>Koordinator Beasiswa & BK,</p>
-          <div class="h-16"></div>
-          <p class="font-bold underline uppercase">Ustadzah Siti Aminah, S.Pd.I</p>
-          <p class="text-[10px]">NIP. 198305212009032003</p>
-        </div>
-        <div class="text-center w-48">
-          <p>${appData.institution.titimangsaKota || appData.institution.kota || 'Singaparna'}, ${appData.institution.tanggalRapor || '21 Desember 2024'}</p>
+        <div class="text-center w-52">
+          <p>Mengetahui / Mengesahkan,</p>
           <p class="font-bold">Kepala Madrasah,</p>
           <div class="h-16"></div>
           <p class="font-bold underline uppercase">${appData.institution.kepalaMadrasah || 'Drs. H. Ahmad Fadlli, M.Pd.I'}</p>
           <p class="text-[10px]">NIP. ${appData.institution.nipKepala || '196908151994031002'}</p>
+        </div>
+        <div class="text-center w-52">
+          <p>${appData.institution.titimangsaKota || appData.institution.kota || 'Singaparna'}, ${appData.institution.tanggalRapor || '21 Desember 2024'}</p>
+          <p class="font-bold">Kepala Tata Usaha,</p>
+          <div class="h-16"></div>
+          <p class="font-bold underline uppercase">${appData.institution.kepalaTU || 'Hj. Siti Rahmawati, S.Pd'}</p>
+          <p class="text-[10px]">NIP. ${appData.institution.nipTU || '197804122005012004'}</p>
         </div>
       </div>
     </div>
@@ -4495,16 +4496,18 @@ function quickPrintInduk(studentId) {
       </table>
 
       <div class="mt-6 flex justify-between text-xs">
-        <div class="text-center w-48">
-          <p>Operator Buku Induk,</p>
+        <div class="text-center w-52">
+          <p>Mengetahui,</p>
+          <p class="font-bold">Kepala Madrasah,</p>
           <div class="h-16"></div>
-          <p class="font-bold underline">${appData.institution.operatorData || 'Ahmad Fauzi, S.Kom'}</p>
+          <p class="font-bold underline uppercase">${appData.institution.kepalaMadrasah || 'Drs. H. Ahmad Fadlli, M.Pd.I'}</p>
+          <p class="text-[10px]">NIP. ${appData.institution.nipKepala || '196908151994031002'}</p>
         </div>
-        <div class="text-center w-48">
+        <div class="text-center w-52">
           <p>${appData.institution.titimangsaKota || appData.institution.kota || 'Singaparna'}, ${appData.institution.tanggalRapor || '21 Desember 2024'}</p>
           <p class="font-bold">Kepala Tata Usaha,</p>
           <div class="h-16"></div>
-          <p class="font-bold underline">${appData.institution.kepalaTU || 'Hj. Siti Rahmawati, S.Pd'}</p>
+          <p class="font-bold underline uppercase">${appData.institution.kepalaTU || 'Hj. Siti Rahmawati, S.Pd'}</p>
           <p class="text-[10px]">NIP. ${appData.institution.nipTU || '197804122005012004'}</p>
         </div>
       </div>
