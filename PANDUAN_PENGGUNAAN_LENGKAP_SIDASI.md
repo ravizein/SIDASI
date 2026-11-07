@@ -36,7 +36,7 @@
 
 ## 1. TENTANG SIDASI MTs AL-FADLLIYAH
 
-**SIDASI (Sistem Informasi Data Siswa)** adalah aplikasi manajemen administrasi dan buku induk kesiswaan yang dikembangkan khusus untuk **MTs Al-Fadlliyah Singaparna, Kabupaten Tasikmalaya** (NSM: 121232040018 / NPSN: 20278912).
+**SIDASI (Sistem Informasi Data Siswa)** adalah aplikasi manajemen administrasi dan buku induk kesiswaan yang dikembangkan khusus untuk **MTs AL-FADLLIYAH** (NSM: 121232040018 / NPSN: 20278912).
 
 **Sistem terpusat pengelolaan Buku Induk Digital, administrasi mutasi resmi, transparansi beasiswa, serta penerbitan sampul rapor terstandar KMA No. 450 Tahun 2024.**
 
