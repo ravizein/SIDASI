@@ -139,6 +139,8 @@ WEB MTS AL-FADLLIYAH/
 ├── Buka_SIDASI.bat            <-- Peluncur 1-klik untuk Windows (Port 9090)
 ├── Jalankan_Backend.command   <-- Peluncur backend alternatif untuk Mac
 ├── Jalankan_Backend.bat       <-- Peluncur backend alternatif untuk Windows
+├── Install_NodeJS_Mac.command <-- Pemasang otomatis Node.js LTS untuk Mac
+├── Install_NodeJS_Windows.bat <-- Pemasang otomatis Node.js LTS untuk Windows
 ├── index.html                 <-- Tampilan Antarmuka Web SIDASI
 ├── js/
 │   ├── data.js                <-- Data Awal Master & LocalStorage Model

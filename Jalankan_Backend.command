@@ -24,15 +24,27 @@ echo "------------------------------------------------------------------"
 # Periksa apakah Node.js terpasang di sistem
 if ! command -v node >/dev/null 2>&1; then
     echo ""
-    echo "❌ Node.js belum terdeteksi di komputer Anda!"
+    echo "❌ Node.js belum terdeteksi di komputer Mac Anda!"
     echo ""
-    echo "💡 Panduan Pemasangan Cepat Node.js (Gratis & Sangat Ringan):"
-    echo "   1. Kunjungi: https://nodejs.org/"
-    echo "   2. Unduh versi 'LTS (Recommended For Most Users)' untuk Mac."
-    echo "   3. Pasang installer (.pkg) tersebut hingga selesai."
-    echo "   4. Buka kembali berkas 'Jalankan_Backend.command' ini."
+    echo "Pilihan Tindakan:"
+    echo "  [1] Pasang Node.js Otomatis Sekarang (Rekomendasi - Cepat & Resmi)"
+    echo "  [2] Buka SIDASI Mode Offline (Tanpa Node.js)"
+    echo "  [3] Keluar"
     echo ""
-    echo "Tekan ENTER untuk keluar..."; read -r
+    read -p "Masukkan pilihan Anda [1/2/3] (Default: 1): " INSTALL_CHOICE
+    INSTALL_CHOICE=${INSTALL_CHOICE:-1}
+
+    if [ "$INSTALL_CHOICE" = "1" ]; then
+        if [ -f "$DIR/Install_NodeJS_Mac.command" ]; then
+            exec "$DIR/Install_NodeJS_Mac.command"
+        else
+            echo "Mengunduh installer resmi..."
+            curl -# -L "https://nodejs.org/dist/v22.14.0/node-v22.14.0.pkg" -o "/tmp/node.pkg" && sudo installer -pkg "/tmp/node.pkg" -target /
+        fi
+    elif [ "$INSTALL_CHOICE" = "2" ]; then
+        open "$DIR/index.html"
+        exit 0
+    fi
     exit 1
 fi
 

@@ -17,15 +17,25 @@ echo ------------------------------------------------------------------
 where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo.
-    echo [X] Node.js belum terdeteksi di komputer Anda!
+    echo [X] Node.js belum terdeteksi di komputer Windows Anda!
     echo.
-    echo Panduan Pemasangan Cepat Node.js:
-    echo    1. Kunjungi: https://nodejs.org/
-    echo    2. Unduh versi 'LTS (Recommended For Most Users)' untuk Windows.
-    echo    3. Pasang installer (.msi) hingga selesai.
-    echo    4. Jalankan kembali berkas 'Jalankan_Backend.bat' ini.
+    echo Pilihan Tindakan:
+    echo   [1] Pasang Node.js Otomatis Sekarang (Rekomendasi - Cepat ^& Resmi)
+    echo   [2] Buka SIDASI Mode Offline (Tanpa Node.js)
+    echo   [3] Keluar
     echo.
-    pause
+    set /p INST_CHOICE="Pilih opsi [1/2/3] (Default: 1): "
+    if "%INST_CHOICE%"=="" set INST_CHOICE=1
+    if "%INST_CHOICE%"=="1" (
+        if exist "Install_NodeJS_Windows.bat" (
+            call "Install_NodeJS_Windows.bat"
+            exit /b
+        )
+    )
+    if "%INST_CHOICE%"=="2" (
+        start "" "%~dp0index.html"
+        exit /b
+    )
     exit /b
 )
 

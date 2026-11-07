@@ -45,6 +45,12 @@ Server REST API lokal murni Node.js Express dengan basis data lokal persisten (`
 - **Pengguna Windows**: Klik ganda berkas [**`Buka_SIDASI.bat`**](Buka_SIDASI.bat) atau [**`Jalankan_Backend.bat`**](Jalankan_Backend.bat).
 - Buka browser dan akses: `http://localhost:9090`
 
+### ⚙️ Pemasangan Otomatis Node.js (1-Klik untuk Komputer Baru):
+Jika laptop/komputer madrasah belum memiliki Node.js, gunakan skrip otomatis ini:
+- **Pengguna Mac (Apple Silicon & Intel)**: Klik ganda berkas [**`Install_NodeJS_Mac.command`**](Install_NodeJS_Mac.command).
+- **Pengguna Windows (64-bit & 32-bit)**: Klik ganda berkas [**`Install_NodeJS_Windows.bat`**](Install_NodeJS_Windows.bat).
+*Skrip otomatis mengunduh installer resmi Node.js LTS dari nodejs.org, memasang runtime, menyiapkan paket dependensi backend, dan langsung membuka SIDASI!*
+
 ### Pilihan 2: Mode Standalone / Tanpa Server (100% Offline)
 Bebas instalasi runtime apa pun:
 - Cukup klik ganda berkas [**`index.html`**](index.html) menggunakan Google Chrome, Safari, atau Edge.
@@ -87,6 +93,8 @@ WEB MTS AL-FADLLIYAH/
 ├── Buka_SIDASI.bat                          # Peluncur utama 1-klik untuk Windows (Port 9090)
 ├── Jalankan_Backend.command                 # Peluncur backend alternatif untuk macOS (Port 9090)
 ├── Jalankan_Backend.bat                     # Peluncur backend alternatif untuk Windows (Port 9090)
+├── Install_NodeJS_Mac.command               # Pemasang otomatis Node.js LTS untuk macOS (Apple Silicon & Intel)
+├── Install_NodeJS_Windows.bat               # Pemasang otomatis Node.js LTS untuk Windows (64-bit & 32-bit)
 ├── index.html                               # Antarmuka SPA utama SIDASI
 ├── PANDUAN_PENGGUNAAN_LENGKAP_SIDASI.md     # Buku panduan lengkap operasional
 ├── README.md                                # Ringkasan panduan cepat

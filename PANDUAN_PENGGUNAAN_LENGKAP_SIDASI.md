@@ -421,8 +421,12 @@ Saat jendela cetak (*Print Dialog*) peramban muncul:
 
 #### T: Muncul pesan error "Node.js belum terdeteksi" saat membuka Jalankan_Backend.command / .bat?
 **J**: Berarti komputer Anda belum terpasang runtime Node.js.
-- Solusi 1: Unduh dan pasang Node.js LTS (gratis dan aman) dari situs resminya: [nodejs.org](https://nodejs.org/). Setelah terpasang, klik ganda kembali berkas peluncur.
-- Solusi 2: Anda tetap dapat langsung menggunakan aplikasi tanpa backend dengan membuka berkas `index.html`.
+- **Solusi 1 (Pemasangan Otomatis Sekali Klik - Sangat Direkomendasikan)**:
+  - **Pengguna Mac**: Klik ganda berkas [**`Install_NodeJS_Mac.command`**](Install_NodeJS_Mac.command).
+  - **Pengguna Windows**: Klik ganda berkas [**`Install_NodeJS_Windows.bat`**](Install_NodeJS_Windows.bat).
+  *Skrip akan secara otomatis mengunduh installer resmi Node.js LTS, memasangnya ke sistem, dan langsung membuka aplikasi SIDASI!*
+- **Solusi 2 (Manual)**: Unduh dan pasang Node.js LTS dari situs resminya: [nodejs.org](https://nodejs.org/). Setelah terpasang, buka kembali berkas peluncur.
+- **Solusi 3 (Tanpa Node.js)**: Anda tetap dapat langsung menggunakan aplikasi secara mandiri (*standalone*) dengan membuka langsung berkas `index.html`.
 
 #### T: Mengapa peluncur backend menggunakan Port 9090?
 **J**: Port 9090 dipilih karena merupakan port standar yang bebas dari konflik sistem bawaan Apple macOS (seperti AirPlay Receiver pada port 5000) dan aplikasi web lain. Jika Port 9090 sedang terpakai oleh aplikasi lain, SIDASI secara otomatis beralih ke port berikutnya (9091, 9092, dst.) berkat fitur *Auto-Port Fallback*.
