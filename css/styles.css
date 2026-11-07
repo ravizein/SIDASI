@@ -1,0 +1,242 @@
+/* custom styles and A4 print layout for SIM Siswa MTs Al-Fadlliyah */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Amiri:wght@400;700&display=swap');
+
+:root {
+  --primary-emerald: #16a34a;
+  --primary-dark: #059669;
+  --surface-bg: #f8fafc;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Hide scrollbar utility for clean horizontal swipe on mobile */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth touch scrolling on mobile devices */
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Date Input Styling & Interactive Calendar Popup */
+input[type="date"] {
+  cursor: pointer;
+  position: relative;
+  font-family: inherit;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 4px;
+  filter: invert(0.3) sepia(1) saturate(5) hue-rotate(110deg);
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Subtle transitions */
+.transition-smooth {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal and Drawer backdrop */
+.backdrop-blur-custom {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  background-color: rgba(15, 23, 42, 0.55);
+}
+
+.backdrop-blur-xs {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ========================================================
+   RESPONSIVE MOBILE SIDEBAR DRAWER (DRAWER MENU LAYAR KECIL)
+   ======================================================== */
+@media (max-width: 1023px) {
+  #app-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 288px !important;
+    max-width: 85vw !important;
+    z-index: 50 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: none !important;
+    display: flex !important;
+  }
+
+  #app-sidebar.sidebar-open,
+  #app-sidebar.translate-x-0 {
+    transform: translateX(0) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  #app-sidebar {
+    position: static !important;
+    transform: translateX(0) !important;
+    box-shadow: none !important;
+    display: flex !important;
+  }
+}
+
+/* A4 Sheet Dimensions for Screen Preview (Responsive Max-Width) */
+.a4-sheet-preview {
+  width: 100%;
+  max-width: 210mm;
+  min-height: 297mm;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  margin: 0 auto;
+  position: relative;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .a4-sheet-preview {
+    min-height: auto;
+    padding: 1.25rem !important;
+  }
+  #rapor-margin-border {
+    padding: 1rem !important;
+  }
+  #rapor-display-nama {
+    font-size: 1.15rem !important;
+  }
+}
+
+/* Responsive table minimum widths for clean mobile horizontal scrolling */
+.responsive-table {
+  min-width: 650px;
+}
+#table-students {
+  min-width: 800px;
+}
+#table-tingkat-body,
+#table-rombel-body {
+  min-width: 620px;
+}
+
+/* Watermark background */
+.watermark-emblem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  opacity: 0.05;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Pencegahan Teks Status & Beasiswa Turun ke Bawah (No-Wrap) */
+.whitespace-nowrap,
+table th,
+table td.whitespace-nowrap,
+table td span[class*="rounded-full"],
+table td span[class*="bg-emerald-"],
+table td span[class*="bg-amber-"],
+table td span[class*="bg-rose-"],
+table td span[class*="bg-green-"],
+table td span[class*="bg-blue-"],
+table td span[class*="bg-slate-"] {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+/* Memastikan baris tabel tetap proporsional & rapi */
+table td {
+  vertical-align: middle;
+}
+
+/* PRINT MEDIA QUERIES FOR PRECISE ISO A4 HARDCOPY */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 12mm 15mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide entire web app UI during printing */
+  #app-wrapper,
+  #app-sidebar,
+  #app-header,
+  #main-nav,
+  .no-print,
+  .modal-container,
+  button,
+  .toast-notification {
+    display: none !important;
+  }
+
+  /* Show only active printable document container */
+  #printable-area {
+    display: block !important;
+  }
+  .printable-document {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    min-height: auto !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /* Force background colors and borders in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

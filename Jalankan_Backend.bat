@@ -1,0 +1,58 @@
+@echo off
+TITLE SIDASI MTs AL-FADLLIYAH - SERVER BACKEND
+COLOR 0A
+
+:: Berpindah ke direktori skrip ini berada
+cd /d "%~dp0"
+
+echo ==================================================================
+echo     [SIDASI MTs AL-FADLLIYAH] SERVER BACKEND MANDIRI
+echo     Bebas MySQL ^& Python ^| Node.js Express + Local File DB
+echo ==================================================================
+echo   Penulis  : Ravi SQ. Moh. Zein Permana
+echo   Status   : Memeriksa lingkungan sistem...
+echo ------------------------------------------------------------------
+
+:: Periksa apakah Node.js terpasang di sistem
+where node >nul 2>nul
+if %errorlevel% neq 0 (
+    echo.
+    echo [X] Node.js belum terdeteksi di komputer Anda!
+    echo.
+    echo Panduan Pemasangan Cepat Node.js:
+    echo    1. Kunjungi: https://nodejs.org/
+    echo    2. Unduh versi 'LTS (Recommended For Most Users)' untuk Windows.
+    echo    3. Pasang installer (.msi) hingga selesai.
+    echo    4. Jalankan kembali berkas 'Jalankan_Backend.bat' ini.
+    echo.
+    pause
+    exit /b
+)
+
+echo [V] Node.js terdeteksi.
+cd backend
+
+:: Periksa apakah dependensi express & cors sudah terpasang
+if not exist "node_modules\" (
+    echo [*] Mengunduh dependensi awal (npm install)...
+    call npm install
+    if %errorlevel% neq 0 (
+        echo [X] Gagal memasang dependensi. Periksa koneksi internet Anda.
+        pause
+        exit /b
+    )
+)
+
+:: Tetapkan Port 9090
+set PORT=9090
+
+:: Buka browser secara otomatis
+start "" "http://localhost:9090"
+
+echo [*] Memulai Server Backend di Port 9090...
+echo [!] Tekan [Ctrl + C] untuk menghentikan server.
+echo ==================================================================
+echo.
+
+node server.js
+pause

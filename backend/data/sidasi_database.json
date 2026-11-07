@@ -1,0 +1,247 @@
+{
+  "institution": {
+    "name": "Madrasah Tsanawiyah Al-Fadlliyah",
+    "nsm": "121232040018",
+    "npsn": "69948210",
+    "statusAkreditasi": "A (Unggul) - BAN-S/M 2023 Nilai 96",
+    "skOperasional": "Kd.10.06/4/PP.00.4/098/2012",
+    "alamat": "Jl. Raya Cikunten No. 45, Desa Cikunten, Kec. Singaparna",
+    "kota": "Kabupaten Tasikmalaya",
+    "provinsi": "Jawa Barat",
+    "kodePos": "46414",
+    "telepon": "(0265) 543890",
+    "email": "mts.alfadlliyah.tsm@gmail.com",
+    "website": "https://mts-alfadlliyah.sch.id",
+    "logo": "",
+    "kepalaMadrasah": "Drs. H. Ahmad Fadlli, M.Pd.I",
+    "nipKepala": "196908151994031002",
+    "kepalaTU": "Hj. Siti Rahmawati, S.Pd",
+    "nipTU": "197804122005012004",
+    "operatorData": "Ahmad Fauzi, S.Kom",
+    "titimangsaKota": "Tasikmalaya",
+    "tanggalRapor": "21 Desember 2024",
+    "semesterAktif": "Ganjil",
+    "tahunAjaranAktif": "2024/2025",
+    "watermark": true,
+    "marginBorder": true,
+    "fontFamily": "Plus Jakarta Sans"
+  },
+  "academicYears": [
+    {
+      "id": "2024-2025-1",
+      "tahun": "2024/2025",
+      "semester": "Ganjil",
+      "label": "TA 2024/2025 Ganjil",
+      "active": true,
+      "tglMulai": "15 Juli 2024",
+      "tglSelesai": "21 Desember 2024",
+      "tglKunciNilai": "18 Desember 2024 (23:59 WIB)",
+      "tglBagiRapor": "21 Desember 2024",
+      "status": "Aktif"
+    },
+    {
+      "id": "2024-2025-2",
+      "tahun": "2024/2025",
+      "semester": "Genap",
+      "label": "TA 2024/2025 Genap",
+      "active": false,
+      "tglMulai": "06 Januari 2025",
+      "tglSelesai": "21 Juni 2025",
+      "tglKunciNilai": "18 Juni 2025 (23:59 WIB)",
+      "tglBagiRapor": "21 Juni 2025",
+      "status": "Mendatang"
+    },
+    {
+      "id": "2023-2024-2",
+      "tahun": "2023/2024",
+      "semester": "Genap",
+      "label": "TA 2023/2024 Genap",
+      "active": false,
+      "tglMulai": "08 Januari 2024",
+      "tglSelesai": "22 Juni 2024",
+      "tglKunciNilai": "19 Juni 2024 (23:59 WIB)",
+      "tglBagiRapor": "22 Juni 2024",
+      "status": "Arsip"
+    }
+  ],
+  "stats": {
+    "totalSiswa": 0,
+    "siswaLaki": 0,
+    "siswaPerempuan": 0,
+    "mutasiBulanIni": 0,
+    "mutasiMasuk": 0,
+    "mutasiKeluar": 0,
+    "penerimaBeasiswa": 0,
+    "siswaMukim": 0,
+    "siswaNonMukim": 0,
+    "berkasKurang": 0,
+    "persenValidasi": 0
+  },
+  "rombelSummary": [
+    {
+      "tingkat": "VII",
+      "rombelCount": 0,
+      "totalSiswa": 0,
+      "kapasitas": 0,
+      "persen": 0,
+      "laki": 0,
+      "perempuan": 0,
+      "status": "Belum Ada Rombel"
+    },
+    {
+      "tingkat": "VIII",
+      "rombelCount": 0,
+      "totalSiswa": 0,
+      "kapasitas": 0,
+      "persen": 0,
+      "laki": 0,
+      "perempuan": 0,
+      "status": "Belum Ada Rombel"
+    },
+    {
+      "tingkat": "IX",
+      "rombelCount": 0,
+      "totalSiswa": 0,
+      "kapasitas": 0,
+      "persen": 0,
+      "laki": 0,
+      "perempuan": 0,
+      "status": "Belum Ada Rombel"
+    }
+  ],
+  "tingkatList": [
+    {
+      "id": "TKT-VII",
+      "kode": "VII",
+      "nama": "Kelas VII",
+      "fase": "Fase D",
+      "deskripsi": "Tingkat pertama Madrasah Tsanawiyah"
+    },
+    {
+      "id": "TKT-VIII",
+      "kode": "VIII",
+      "nama": "Kelas VIII",
+      "fase": "Fase D",
+      "deskripsi": "Tingkat menengah Madrasah Tsanawiyah"
+    },
+    {
+      "id": "TKT-IX",
+      "kode": "IX",
+      "nama": "Kelas IX",
+      "fase": "Fase D",
+      "deskripsi": "Tingkat akhir Madrasah Tsanawiyah"
+    }
+  ],
+  "rombelList": [],
+  "rombelUnggulan": [],
+  "beasiswaPillars": [
+    {
+      "id": "ksm",
+      "title": "Prestasi KSM & Akademik",
+      "badgeColor": "emerald",
+      "icon": "award",
+      "penerima": 0,
+      "totalAlokasi": 0,
+      "realisasi": 0,
+      "persenSerapan": 0,
+      "deskripsi": "Bantuan pembebasan iuran/SPP & pembinaan intensif kompetisi sains madrasah."
+    },
+    {
+      "id": "baznas",
+      "title": "Afirmasi Dhuafa (Kerjasama BAZNAS)",
+      "badgeColor": "blue",
+      "icon": "heart-handshake",
+      "penerima": 0,
+      "totalAlokasi": 0,
+      "realisasi": 0,
+      "persenSerapan": 0,
+      "deskripsi": "Paket perlengkapan kitab, seragam madrasah, dan subsidi operasional santri dhuafa."
+    },
+    {
+      "id": "pip",
+      "title": "Program Indonesia Pintar (PIP)",
+      "badgeColor": "amber",
+      "icon": "wallet",
+      "penerima": 0,
+      "totalAlokasi": 0,
+      "realisasi": 0,
+      "persenSerapan": 0,
+      "deskripsi": "Penyaluran dana tunai bantuan pendidikan bersumber dari APBN bantuan pendidikan."
+    }
+  ],
+  "students": [],
+  "mutations": [],
+  "beasiswaList": [],
+  "users": [
+    {
+      "id": "USR-ADMIN",
+      "nama": "Administrator SIDASI",
+      "username": "admin",
+      "password": "admin",
+      "peran": "Administrator Sistem",
+      "nip": "198501012010011001",
+      "status": "Aktif",
+      "akses": "Akses Penuh Seluruh Sistem & Konfigurasi"
+    }
+  ],
+  "activeAcademicYearId": "2024-2025-1",
+  "yearlyData": {
+    "2024-2025-1": {
+      "students": [],
+      "stats": {
+        "totalSiswa": 0,
+        "siswaLaki": 0,
+        "siswaPerempuan": 0,
+        "mutasiBulanIni": 0,
+        "mutasiMasuk": 0,
+        "mutasiKeluar": 0,
+        "penerimaBeasiswa": 0,
+        "siswaMukim": 0,
+        "siswaNonMukim": 0,
+        "berkasKurang": 0,
+        "persenValidasi": 0
+      },
+      "mutations": [],
+      "beasiswaList": [],
+      "rombelSummary": []
+    },
+    "2024-2025-2": {
+      "students": [],
+      "stats": {
+        "totalSiswa": 0,
+        "siswaLaki": 0,
+        "siswaPerempuan": 0,
+        "mutasiBulanIni": 0,
+        "mutasiMasuk": 0,
+        "mutasiKeluar": 0,
+        "penerimaBeasiswa": 0,
+        "siswaMukim": 0,
+        "siswaNonMukim": 0,
+        "berkasKurang": 0,
+        "persenValidasi": 0
+      },
+      "mutations": [],
+      "beasiswaList": [],
+      "rombelSummary": []
+    },
+    "2023-2024-2": {
+      "students": [],
+      "stats": {
+        "totalSiswa": 0,
+        "siswaLaki": 0,
+        "siswaPerempuan": 0,
+        "mutasiBulanIni": 0,
+        "mutasiMasuk": 0,
+        "mutasiKeluar": 0,
+        "penerimaBeasiswa": 0,
+        "siswaMukim": 0,
+        "siswaNonMukim": 0,
+        "berkasKurang": 0,
+        "persenValidasi": 0
+      },
+      "mutations": [],
+      "beasiswaList": [],
+      "rombelSummary": []
+    }
+  }
+}

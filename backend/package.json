@@ -1,0 +1,24 @@
+{
+  "name": "sidasi-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API Server untuk SIDASI MTs Al-Fadlliyah (Node.js & Express)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "sidasi",
+    "express",
+    "backend",
+    "madrasah",
+    "kesiswaan"
+  ],
+  "author": "Ravi SQ. Moh. Zein Permana",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
+

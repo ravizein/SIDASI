@@ -1,0 +1,19 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node dependencies
+node_modules/
+backend/node_modules/
+
+# Runtime / Temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.active_port
+backend/data/.active_port

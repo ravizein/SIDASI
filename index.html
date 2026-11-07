@@ -1,0 +1,3400 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIDASI MTs AL-FADLLIYAH - Sistem Informasi Data Siswa Terpadu</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            primary: {
+              DEFAULT: '#16a34a',
+              dark: '#059669',
+              light: '#dcfce7'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Times New Roman"', 'Times', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- SheetJS (XLSX) CDN for real Excel exports -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans antialiased select-none">
+
+  <!-- ==========================================
+       VIEW: FORM LOGIN RESMI SIDASI (LG-00)
+       ========================================== -->
+  <div id="view-login"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-white overflow-y-auto min-h-screen">
+
+    <div
+      class="relative w-full max-w-md bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 p-8 sm:p-10 my-auto">
+
+      <!-- Header Branding & Logo -->
+      <div class="text-center mb-6">
+        <div id="login-logo-container"
+          class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 mx-auto shadow-sm overflow-hidden mb-3.5">
+          <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <p class="text-[11px] font-extrabold text-emerald-800 uppercase tracking-wider" id="login-school-name">MTs
+          Al-Fadlliyah</p>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight mt-0.5">SIDASI</h2>
+        <p class="text-xs text-slate-500 mt-1">Sistem Informasi Data Siswa Terpadu Mandiri</p>
+      </div>
+
+      <!-- Alert Box Error (Hidden by Default) -->
+      <div id="login-error-box"
+        class="hidden p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs mb-4 flex items-start space-x-2.5">
+        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 shrink-0 mt-0.5"></i>
+        <span id="login-error-message" class="font-medium">Username atau kata sandi tidak valid.</span>
+      </div>
+
+      <form id="form-login" onsubmit="event.preventDefault(); handleUserLogin();" class="space-y-4">
+
+        <!-- Input Username -->
+        <div>
+          <label for="login-username" class="block text-xs font-bold text-slate-700 mb-1.5">Username Login:</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="user" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="login-username" required placeholder="Masukkan username Anda" autocomplete="username"
+              class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-emerald-600 focus:bg-white transition-all">
+          </div>
+        </div>
+
+        <!-- Input Password -->
+        <div>
+          <label for="login-password" class="block text-xs font-bold text-slate-700 mb-1.5">Kata Sandi
+            (Password):</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="lock" class="w-4 h-4"></i>
+            </div>
+            <input type="password" id="login-password" required placeholder="Masukkan kata sandi"
+              autocomplete="current-password"
+              class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-emerald-600 focus:bg-white transition-all font-mono">
+            <button type="button" onclick="toggleLoginPasswordVisibility()"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+              <i data-lucide="eye" id="login-eye-icon" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Opsi Ingat Saya -->
+        <div class="flex items-center justify-between text-xs pt-1">
+          <label class="flex items-center space-x-2 cursor-pointer select-none">
+            <input type="checkbox" id="login-remember" checked
+              class="w-3.5 h-3.5 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300">
+            <span class="text-slate-600 text-[11px] font-medium">Tetap masuk di perangkat ini</span>
+          </label>
+        </div>
+
+        <!-- Tombol Masuk -->
+        <button type="submit" id="btn-submit-login"
+          class="w-full mt-2 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-600/25 transition-all flex items-center justify-center space-x-2">
+          <span>Masuk ke Sistem</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <!-- Footer Card -->
+      <div class="pt-5 mt-6 border-t border-slate-100 space-y-2 text-center text-[10.5px] text-slate-400">
+        <div class="flex items-center justify-between">
+          <span class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Basis Data Lokal Mandiri</span>
+          </span>
+          <span>v2.4 - Standalone</span>
+        </div>
+        <div class="pt-2 border-t border-slate-100 text-slate-500">
+          <span>Hak Cipta © 2026 </span>
+          <span class="font-bold text-slate-700">Ravi SQ. Moh. Zein Permana</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       APP WRAPPER (HIDDEN DURING NATIVE A4 PRINT)
+       ========================================== -->
+  <div id="app-wrapper" class="flex-1 flex overflow-hidden h-screen">
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebar-backdrop" onclick="closeMobileSidebar()"
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity duration-300">
+    </div>
+    <div id="sidebar-backdrop" onclick="closeMobileSidebar(event)"
+      class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity duration-300 cursor-pointer">
+    </div>
+
+    <!-- 1. SIDEBAR PERSISTEN & RESPONSIVE MOBILE DRAWER (G-04) -->
+    <aside id="app-sidebar"
+      class="fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none">
+
+      <!-- Logo Lembaga & Identitas Madrasah -->
+      <div>
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+          <div class="flex items-center space-x-3.5 overflow-hidden min-w-0">
+            <div id="sidebar-logo-container"
+              class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-emerald-600 to-green-700 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 shrink-0 overflow-hidden">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div class="overflow-hidden min-w-0">
+              <h1 class="text-sm font-extrabold text-slate-900 tracking-tight leading-tight uppercase truncate"
+                id="sidebar-school-name">MTs Al-Fadlliyah</h1>
+              <p class="text-[11px] font-medium text-slate-500 truncate mt-0.5">SIDASI (Sistem Informasi Data Siswa)</p>
+            </div>
+          </div>
+          <button type="button" id="btn-close-sidebar" onclick="closeMobileSidebar(event)"
+            class="lg:hidden p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg shrink-0 ml-2 cursor-pointer"
+            aria-label="Tutup Menu">
+            <i data-lucide="x" class="w-5 h-5 pointer-events-none"></i>
+          </button>
+        </div>
+
+        <!-- Indikator Status Basis Data & Server Backend -->
+        <div id="backend-status-container"
+          class="px-5 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[11px] transition-colors">
+          <div class="flex items-center space-x-1.5 text-slate-700 font-semibold" id="backend-status-title">
+            <span id="backend-status-dot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+            <span id="backend-status-text">Memeriksa Server Backend...</span>
+          </div>
+          <span id="backend-status-badge"
+            class="text-slate-600 bg-white px-1.5 py-0.5 rounded text-[10px] font-bold border border-slate-200">Mendeteksi...</span>
+        </div>
+
+        <!-- Menu Navigasi Modul -->
+        <nav class="p-3 space-y-1" id="main-nav">
+          <button data-tab="tab-dashboard"
+            class="nav-item active w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-emerald-700 bg-emerald-50 transition-colors">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 text-emerald-600"></i>
+            <span>Data Umum</span>
+          </button>
+
+          <button data-tab="tab-buku-induk"
+            class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+            <i data-lucide="book-open" class="w-5 h-5 text-slate-500"></i>
+            <span>Buku Induk Siswa</span>
+          </button>
+
+          <button data-tab="tab-mutasi"
+            class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+            <i data-lucide="arrow-left-right" class="w-5 h-5 text-slate-500"></i>
+            <span>Mutasi Siswa</span>
+          </button>
+
+          <button data-tab="tab-beasiswa"
+            class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+            <i data-lucide="award" class="w-5 h-5 text-slate-500"></i>
+            <span>Program Beasiswa</span>
+          </button>
+
+          <button data-tab="tab-rapor"
+            class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+            <i data-lucide="file-badge" class="w-5 h-5 text-slate-500"></i>
+            <span>Identitas Rapor (KMA 450)</span>
+          </button>
+
+          <button data-tab="tab-pengaturan"
+            class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+            <i data-lucide="settings" class="w-5 h-5 text-slate-500"></i>
+            <span>Pengaturan Sistem</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Info Versi & Hak Cipta Bawah -->
+      <div class="p-3.5 border-t border-slate-100 bg-slate-50/50">
+        <div class="flex items-center justify-between text-[10px] text-slate-400 px-1">
+          <span>NSM: 121232040018</span>
+          <span>v2.4 - Standalone</span>
+        </div>
+        <div class="mt-2 pt-2 border-t border-slate-100 text-center text-[9.5px] text-slate-400">
+          <span>Hak Cipta © 2026 </span><span class="font-bold text-slate-600 block">Ravi SQ. Moh. Zein Permana</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 2. KONTEN UTAMA & HEADER GLOBAL -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+      <!-- HEADER GLOBAL (G-01, G-02, G-03) -->
+      <header id="app-header"
+        class="h-16 bg-white border-b border-slate-200 px-3.5 sm:px-6 flex items-center justify-between z-20 shrink-0">
+
+        <!-- Judul Halaman Dinamis & Breadcrumb -->
+        <div class="flex items-center space-x-2 sm:space-x-4 min-w-0 overflow-hidden">
+          <button type="button" id="btn-toggle-sidebar" onclick="toggleMobileSidebar(event)"
+            class="lg:hidden p-2 -ml-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 rounded-xl shrink-0 cursor-pointer transition-colors"
+            aria-label="Buka Menu Navigasi" title="Buka Menu">
+            <i data-lucide="menu" class="w-5 h-5 pointer-events-none"></i>
+          </button>
+          <div class="min-w-0">
+              <h2 id="page-title" class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight truncate">
+                Data
+                Umum Kesiswaan</h2>
+              <div class="hidden sm:flex items-center space-x-2 text-xs text-slate-500 font-medium truncate">
+                <span id="header-school-name" class="truncate">MTs Al-Fadlliyah Singaparna</span>
+                <span>•</span>
+                <span id="active-ta-badge" class="text-emerald-700 font-semibold truncate">Tahun Ajaran 2024/2025
+                  (Semester Ganjil)</span>
+              </div>
+            </div>
+        </div>
+
+        <!-- Kontrol Header Kanan: Dropdown TA/Semester, Profil Pengguna & Logout -->
+        <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+
+          <!-- G-01 Dropdown Tahun Ajaran & Semester Interaktif -->
+          <div class="relative">
+            <div
+              class="flex items-center bg-slate-100 hover:bg-slate-200/80 rounded-xl px-2 sm:px-3 py-1.5 border border-slate-200 transition-colors cursor-pointer">
+              <i data-lucide="calendar" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-700 mr-1 sm:mr-2 shrink-0"></i>
+              <select id="select-academic-year"
+                class="bg-transparent text-[11px] sm:text-xs font-bold text-slate-800 outline-none cursor-pointer pr-1 sm:pr-2 max-w-[125px] sm:max-w-none truncate">
+                <option value="2024-2025-1" selected>TA 2024/2025 Ganjil</option>
+                <option value="2024-2025-2">TA 2024/2025 Genap</option>
+                <option value="2023-2024-2">TA 2023/2024 Genap</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Profil Pengguna Navbar -->
+          <div class="flex items-center space-x-1.5 sm:space-x-2.5 pl-1.5 sm:pl-3 border-l border-slate-200">
+            <div id="header-user-avatar"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px] sm:text-xs uppercase shadow-inner shrink-0">
+              AD
+            </div>
+            <div class="hidden md:block text-left">
+              <p id="header-user-name" class="text-xs font-bold text-slate-900 leading-tight">Administrator SIDASI</p>
+              <p id="header-user-role" class="text-[10px] text-slate-500 leading-tight">Administrator Sistem</p>
+            </div>
+            <button id="btn-switch-user" onclick="openAuthModal()" title="Beralih Pengguna"
+              class="p-1 sm:p-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors">
+              <i data-lucide="user-cog" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Tombol Logout Header -->
+          <button onclick="handleLogout()" title="Keluar / Logout dari Sistem"
+            class="inline-flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs font-bold transition-all border border-slate-200">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Keluar</span>
+          </button>
+
+        </div>
+      </header>
+
+      <!-- KONTEN MODUL UTAMA (SCROLLABLE) -->
+      <main class="flex-1 overflow-y-auto p-3.5 sm:p-5 lg:p-6 bg-slate-50/70" id="main-content">
+
+        <!-- ========================================================
+             MODUL 1: DATA UMUM (DASHBOARD UTAMA)
+             ======================================================== -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+
+          <!-- DU-01 Banner Sambutan Resmi -->
+          <div
+            class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-green-700 p-6 md:p-8 text-white shadow-lg shadow-emerald-900/10">
+            <div class="relative z-10 max-w-3xl">
+              <span
+                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-900/50 text-emerald-200 border border-emerald-500/30 mb-3">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5 text-emerald-400"></i>
+                Sistem Informasi Kesiswaan Mandiri Standalone
+              </span>
+              <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Selamat Datang di SIDASI (Sistem Informasi
+                Data Siswa) <span id="dash-welcome-school">MTs Al-Fadlliyah</span></h2>
+              <p class="mt-2 text-sm md:text-base text-emerald-100 leading-relaxed font-normal">
+                Sistem terpusat pengelolaan Buku Induk Digital, administrasi mutasi resmi, transparansi beasiswa, serta penerbitan sampul rapor terstandar KMA No. 450 Tahun 2024.
+              </p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <button onclick="switchTab('tab-buku-induk')"
+                  class="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-white text-emerald-800 font-bold text-sm shadow-md hover:bg-emerald-50 transition-all">
+                  <i data-lucide="book-open" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Kelola Buku Induk Siswa</span>
+                </button>
+                <button onclick="switchTab('tab-mutasi')"
+                  class="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emerald-900/40 hover:bg-emerald-900/60 text-white border border-emerald-400/40 font-semibold text-sm transition-all">
+                  <i data-lucide="file-text" class="w-4 h-4 text-emerald-300"></i>
+                  <span>Terbitkan SK Mutasi</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Background Decorative Badge -->
+            <div class="absolute -right-8 -bottom-10 opacity-10 pointer-events-none">
+              <svg class="w-72 h-72 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- DU-02 Kartu Ringkasan Kunci (Metrik Utama) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- Card 1: Total Siswa Aktif -->
+            <div
+              class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Siswa Aktif</span>
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline space-x-2">
+                <span class="text-3xl font-extrabold text-slate-900" id="dash-total-siswa">0</span>
+                <span
+                  class="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200"
+                  id="dash-badge-valid">0% Valid</span>
+              </div>
+              <p class="mt-2 text-xs text-slate-500 flex items-center" id="dash-text-valid">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400 mr-1"></i>
+                Belum ada data siswa
+              </p>
+            </div>
+
+            <!-- Card 2: Rasio Gender -->
+            <div
+              class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Rasio Gender Siswa</span>
+                <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                  <i data-lucide="user-check" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline justify-between">
+                <div>
+                  <span class="text-xl font-extrabold text-slate-900" id="dash-siswa-laki">0 <span
+                      class="text-xs font-medium text-slate-500">L</span></span>
+                  <span class="text-[11px] text-blue-600 font-bold block" id="dash-persen-laki">(0%)</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-xl font-extrabold text-slate-900" id="dash-siswa-perempuan">0 <span
+                      class="text-xs font-medium text-slate-500">P</span></span>
+                  <span class="text-[11px] text-pink-600 font-bold block" id="dash-persen-perempuan">(0%)</span>
+                </div>
+              </div>
+              <div class="mt-3 w-full bg-slate-100 rounded-full h-2 flex overflow-hidden">
+                <div class="bg-blue-600 h-2" id="dash-bar-laki" style="width: 0%"></div>
+                <div class="bg-pink-500 h-2" id="dash-bar-perempuan" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <!-- Card 3: Mutasi Bulan Berjalan -->
+            <div
+              class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mutasi Berjalan</span>
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline space-x-2">
+                <span class="text-3xl font-extrabold text-slate-900" id="dash-mutasi-total">0</span>
+                <span class="text-xs font-bold text-slate-600">Siswa</span>
+              </div>
+              <div class="mt-2 flex items-center space-x-3 text-xs">
+                <span class="text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded"
+                  id="dash-mutasi-masuk">↑ 0 Masuk</span>
+                <span class="text-rose-700 font-semibold bg-rose-50 px-1.5 py-0.5 rounded" id="dash-mutasi-keluar">↓ 0
+                  Keluar</span>
+              </div>
+            </div>
+
+            <!-- Card 4: Penerima Beasiswa Terdaftar -->
+            <div
+              class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Penerima Beasiswa</span>
+                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <i data-lucide="award" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <div class="mt-3 flex items-baseline space-x-2">
+                <span class="text-3xl font-extrabold text-slate-900" id="dash-penerima-beasiswa">0</span>
+                <span
+                  class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">3
+                  Pilar</span>
+              </div>
+              <p class="mt-2 text-xs text-slate-500">
+                KSM Prestasi, BAZNAS Dhuafa & PIP
+              </p>
+            </div>
+
+          </div>
+
+          <!-- DU-03 & DU-04: Sebaran Jenjang Rombel & Rombel Unggulan -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- DU-03 Sebaran Jenjang Rombel (Kelas VII, VIII, IX) -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2">
+              <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
+                <div>
+                  <h3 class="text-base font-extrabold text-slate-900">Sebaran Kapasitas & Jenjang Rombongan Belajar</h3>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <!-- Dropdown Menu Aksi Rombel -->
+                  <div class="relative inline-block text-left" id="rombel-action-dropdown-wrapper">
+                    <button type="button" onclick="toggleRombelActionMenu()" id="btn-rombel-action-menu"
+                      class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-200">
+                      <i data-lucide="menu" class="w-3.5 h-3.5 text-slate-600"></i>
+                      <span>Menu Rombel</span>
+                      <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+                    </button>
+                    <!-- Isi Dropdown Menu -->
+                    <div id="dropdown-menu-rombel"
+                      class="hidden absolute right-0 mt-1.5 w-52 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-30 text-xs">
+                      <button type="button" onclick="openAddRombelModal(); toggleRombelActionMenu();"
+                        class="w-full text-left px-3.5 py-2 font-medium text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 flex items-center space-x-2 transition-colors">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-emerald-600"></i>
+                        <span>Tambah Rombel Baru</span>
+                      </button>
+                      <button type="button" onclick="navigateToRombelSettings(); toggleRombelActionMenu();"
+                        class="w-full text-left px-3.5 py-2 font-medium text-slate-700 hover:bg-slate-100 flex items-center space-x-2 transition-colors">
+                        <i data-lucide="sliders" class="w-4 h-4 text-slate-500"></i>
+                        <span>Pengaturan Rombel Lengkap</span>
+                      </button>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">Kapasitas
+                    Maksimal</span>
+                </div>
+              </div>
+
+              <div class="space-y-5" id="container-rombel-summary">
+                <!-- Diisi via JS dinamis -->
+              </div>
+
+              <!-- Ringkasan Domisili Santri Mukim vs Non-Mukim (PRD 1.1 & 7.2) -->
+              <div class="mt-6 pt-5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div
+                  class="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                      <i data-lucide="home" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-slate-900">Siswa Mukim (Pondok)</p>
+                      <p class="text-[11px] text-slate-500">Asrama Al-Fatih, Khadijah & Ibnu Sina</p>
+                    </div>
+                  </div>
+                  <span class="text-base font-extrabold text-emerald-800" id="dash-mukim-summary">0 (0%)</span>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg bg-slate-700 text-white flex items-center justify-center">
+                      <i data-lucide="bus" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-slate-900">Siswa Non-Mukim</p>
+                      <p class="text-[11px] text-slate-500">Pelajar Harian (Laju Singaparna & sekitarnya)</p>
+                    </div>
+                  </div>
+                  <span class="text-base font-extrabold text-slate-800" id="dash-nonmukim-summary">0 (0%)</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- DU-04 Rombel Unggulan & Akreditasi BAN-S/M -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <div class="flex items-center space-x-2">
+                    <h3 class="text-base font-extrabold text-slate-900">Rombel Unggulan</h3>
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800"
+                      id="dash-akreditasi-badge">
+                      BAN-S/M: A (96)
+                    </span>
+                  </div>
+                  <div class="flex items-center space-x-1.5">
+                    <button type="button" onclick="openAddRombelUnggulanModal()" title="Tambah Rombel Unggulan"
+                      class="px-2.5 py-1 rounded-lg text-emerald-700 hover:bg-emerald-50 border border-emerald-200 text-xs font-bold flex items-center space-x-1 transition-colors">
+                      <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                      <span>Tambah</span>
+                    </button>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Program kelas binaan akademik & keagamaan madrasah.</p>
+
+                <div class="space-y-3.5" id="container-rombel-unggulan">
+                  <!-- Diisi via JS dinamis -->
+                </div>
+              </div>
+
+              <!-- Legalitas Singkat -->
+              <div class="mt-6 p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 text-[11px] text-slate-600">
+                <div class="flex items-center justify-between font-bold text-slate-900 mb-1">
+                  <span id="dash-inst-title">MTs Al-Fadlliyah</span>
+                  <span class="text-emerald-700" id="dash-akreditasi-label">Terakreditasi Unggul</span>
+                </div>
+                <p class="text-slate-500" id="dash-legalitas-deskripsi">SK BAN-S/M No. 1857/BAN-SM/SK/2023. Memenuhi
+                  standar nasional sarana, pendidik, dan mutu lulusan madrasah.</p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ========================================================
+             MODUL 2: BUKU INDUK SISWA DIGITAL (BI-01 S/D BI-04)
+             ======================================================== -->
+        <section id="tab-buku-induk" class="tab-content hidden space-y-6">
+
+          <!-- Metrik Status Data Kesiswaan (PRD 4.3) -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Siswa Mukim (Pondok)</span>
+              <p class="text-2xl font-extrabold text-emerald-700 mt-1" id="bi-stat-mukim">0 <span
+                  class="text-xs font-normal text-slate-500">siswa</span></p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Siswa Non-Mukim</span>
+              <p class="text-2xl font-extrabold text-slate-800 mt-1" id="bi-stat-nonmukim">0 <span
+                  class="text-xs font-normal text-slate-500">siswa</span></p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Validitas NIK / NISN</span>
+              <p class="text-2xl font-extrabold text-slate-700 mt-1" id="bi-stat-validitas">0% <span
+                  class="text-xs font-normal text-slate-400">belum ada data</span></p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Berkas Fisik Kurang</span>
+              <p class="text-2xl font-extrabold text-amber-600 mt-1" id="bi-stat-berkas">0 <span
+                  class="text-xs font-normal text-slate-500">perlu tindak lanjut</span></p>
+            </div>
+          </div>
+
+          <!-- Toolbar Multi-Filter & Tombol Aksi Kunci (BI-01, BI-02, BI-03) -->
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+
+              <!-- Search Input -->
+              <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                <input type="text" id="filter-search-student" placeholder="Cari Nama Siswa, NISN, NIK, atau NIS..."
+                  class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-emerald-600 focus:bg-white transition-all">
+              </div>
+
+              <!-- Multi-Filter Dropdowns -->
+              <div class="flex flex-wrap items-center gap-2">
+
+                <!-- Filter Tingkat -->
+                <select id="filter-tingkat"
+                  class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-emerald-600">
+                  <option value="ALL">Semua Jenjang</option>
+                </select>
+
+                <!-- Filter Rombel Belajar -->
+                <select id="filter-rombel"
+                  class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-emerald-600">
+                  <option value="ALL">Semua Rombel</option>
+                </select>
+
+                <!-- Filter Domisili -->
+                <select id="filter-domisili"
+                  class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-emerald-600">
+                  <option value="ALL">Semua Domisili</option>
+                  <option value="Mukim (Pondok)">Mukim (Pondok)</option>
+                  <option value="Non-Mukim">Non-Mukim</option>
+                </select>
+
+                <!-- Filter Status Siswa -->
+                <select id="filter-status-siswa"
+                  class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-emerald-600">
+                  <option value="ALL">Semua Status</option>
+                  <option value="Aktif">Aktif</option>
+                  <option value="Mutasi Keluar">Mutasi Keluar</option>
+                </select>
+
+                <!-- BI-02 Tombol Export Excel (SheetJS) -->
+                <button id="btn-export-excel" onclick="exportStudentsToExcel()"
+                  class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:text-emerald-700 hover:border-emerald-600 rounded-xl text-xs font-bold transition-all shadow-sm">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Export Excel</span>
+                </button>
+
+                <!-- Tombol Import Excel -->
+                <button id="btn-open-import-excel" onclick="openImportExcelModal()"
+                  class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-all shadow-sm">
+                  <i data-lucide="file-up" class="w-4 h-4 text-emerald-700"></i>
+                  <span>Import Excel</span>
+                </button>
+
+                <!-- Tombol Hapus Semua Database -->
+                <button type="button" onclick="openWipeDatabaseModal()" title="Hapus dan kosongkan seluruh isi basis data"
+                  class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-rose-50 border border-rose-300 text-rose-700 hover:bg-rose-100 rounded-xl text-xs font-bold transition-all shadow-sm">
+                  <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
+                  <span>Hapus Database</span>
+                </button>
+
+                <!-- BI-01 Tombol Tambah Siswa Baru -->
+                <button id="btn-open-add-student"
+                  class="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20">
+                  <i data-lucide="user-plus" class="w-4 h-4"></i>
+                  <span>Tambah Siswa</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Baris Informasi Filter Aktif & Jumlah Data -->
+            <div
+              class="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+              <span id="label-student-count">Menampilkan 0 data siswa (siap input manual atau impor Excel)</span>
+              <span class="text-emerald-700 font-semibold cursor-pointer hover:underline text-[11px]"
+                onclick="resetStudentFilters()">Reset Semua Filter</span>
+            </div>
+          </div>
+
+          <!-- Tabel Data Siswa Terpadu (Format Lengkap 34 Kolom Resmi EMIS) -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto max-w-full">
+              <table class="w-full text-left border-collapse" id="table-students">
+                <thead id="student-table-header">
+                  <tr
+                    class="bg-emerald-800 text-white text-[11px] font-extrabold uppercase tracking-wider divide-x divide-emerald-700/60 shadow-xs">
+                    <th class="py-3 px-3 w-10 text-center whitespace-nowrap">NO</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NISN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NIS</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NIK SISWA</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NAMA SISWA</th>
+                    <th class="py-3 px-3 whitespace-nowrap">TEMPAT LAHIR</th>
+                    <th class="py-3 px-3 whitespace-nowrap">TANGGAL LAHIR</th>
+                    <th class="py-3 px-3 text-center whitespace-nowrap">JK</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KELAS</th>
+                    <th class="py-3 px-3 whitespace-nowrap">TINGKAT KELAS</th>
+                    <th class="py-3 px-3 whitespace-nowrap">AGAMA</th>
+                    <th class="py-3 px-3 text-center whitespace-nowrap">JML SAUDARA</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NIK IBU</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NAMA AYAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NIK AYAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap">PEKERJAAN AYAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap">PENDIDIKAN AYAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap">PENGHASILAN AYAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NAMA IBU</th>
+                    <th class="py-3 px-3 whitespace-nowrap">PEKERJAAN IBU</th>
+                    <th class="py-3 px-3 whitespace-nowrap">PENGHASILAN IBU</th>
+                    <th class="py-3 px-3 whitespace-nowrap min-w-[200px]">ALAMAT</th>
+                    <th class="py-3 px-3 whitespace-nowrap">RT/RW</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KELURAHAN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KECAMATAN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KABUPATEN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NAMA SEKOLAH ASAL</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NPSN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KELOMPOK</th>
+                    <th class="py-3 px-3 whitespace-nowrap">KEBUTUHAN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NO. PESERTA UJIAN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">NO. IJAZAH</th>
+                    <th class="py-3 px-3 whitespace-nowrap min-w-[180px]">KETERANGAN</th>
+                    <th class="py-3 px-3 whitespace-nowrap">TANGGAL MASUK MADRASAH</th>
+                    <th class="py-3 px-3 text-center whitespace-nowrap sticky right-0 bg-emerald-800 z-10">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs font-medium text-slate-700" id="student-table-body">
+                  <!-- Diisi dinamis via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================================
+             MODUL 3: MANAJEMEN MUTASI SISWA (MS-01 S/D MS-03)
+             ======================================================== -->
+        <section id="tab-mutasi" class="tab-content hidden space-y-6">
+
+          <!-- Metrik Mutasi Semester Berjalan (PRD 4.4) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase">Mutasi Masuk Semester Ini</span>
+                <p class="text-2xl font-extrabold text-emerald-700 mt-1" id="mut-stat-masuk">0 Siswa</p>
+                <p class="text-[11px] text-slate-400 mt-0.5" id="mut-stat-masuk-sub">Belum ada mutasi masuk</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <i data-lucide="user-check" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase">Mutasi Keluar Semester Ini</span>
+                <p class="text-2xl font-extrabold text-rose-600 mt-1" id="mut-stat-keluar">0 Siswa</p>
+                <p class="text-[11px] text-slate-400 mt-0.5" id="mut-stat-keluar-sub">Belum ada mutasi keluar</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center">
+                <i data-lucide="user-x" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase">Sisa Kuota Daya Tampung</span>
+                <p class="text-2xl font-extrabold text-blue-700 mt-1" id="mut-stat-kuota">0 Kursi</p>
+                <p class="text-[11px] text-slate-400 mt-0.5" id="mut-stat-kuota-sub">Belum ada rombel terdaftar</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                <i data-lucide="layout-grid" class="w-6 h-6"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Master-Detail Mutasi Siswa (Tabel Riwayat & Live Preview Dokumen) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Sisi Kiri: Tabel Riwayat Mutasi (7 Kolom) -->
+            <div class="lg:col-span-7 space-y-4">
+              <div
+                class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-2">
+                  <button onclick="filterMutationTab('ALL')" id="mut-tab-all"
+                    class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white">Semua (0)</button>
+                  <button onclick="filterMutationTab('Mutasi Masuk')" id="mut-tab-masuk"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Masuk
+                    (0)</button>
+                  <button onclick="filterMutationTab('Mutasi Keluar')" id="mut-tab-keluar"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200">Keluar
+                    (0)</button>
+                </div>
+
+                <!-- MS-01 Tombol + Ajukan Mutasi Baru -->
+                <button id="btn-open-add-mutation"
+                  class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  <span>+ Ajukan Mutasi Baru</span>
+                </button>
+              </div>
+
+              <!-- Tabel Daftar Berkas Mutasi -->
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr
+                        class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                        <th class="py-3 px-3.5 whitespace-nowrap">No. Surat</th>
+                        <th class="py-3 px-3.5 whitespace-nowrap">Nama Siswa</th>
+                        <th class="py-3 px-3.5 whitespace-nowrap">Jenis Mutasi</th>
+                        <th class="py-3 px-3.5 whitespace-nowrap">Madrasah Asal / Tujuan</th>
+                        <th class="py-3 px-3.5 text-right whitespace-nowrap">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs text-slate-700" id="mutation-table-body">
+                      <!-- Diisi dinamis via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sisi Kanan: MS-03 Pratinjau Dokumen Surat Keterangan Pindah Resmi (5 Kolom) -->
+            <div
+              class="lg:col-span-5 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Live Pratinjau SK Mutasi Resmi</h3>
+                    <p class="text-[11px] text-slate-500" id="sk-preview-school-sub">Standar Resmi MTs Al-Fadlliyah</p>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button type="button" onclick="openEditActiveMutationModal()" id="btn-edit-active-mutation"
+                      class="inline-flex items-center space-x-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold shadow-sm transition-all"
+                      title="Edit isi surat keterangan mutasi yang sedang ditampilkan">
+                      <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                      <span>Edit SK</span>
+                    </button>
+                    <button type="button" id="btn-print-mutation"
+                      class="inline-flex items-center space-x-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm transition-all">
+                      <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                      <span>Cetak SK (A4)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Box Mini Simulasi Kertas Dokumen Resmi -->
+                <div id="sk-preview-card" onclick="openEditActiveMutationModal()"
+                  title="Klik untuk mengedit isi Surat Keterangan Mutasi ini"
+                  class="bg-white border-2 border-slate-300 hover:border-amber-400 p-5 rounded-lg shadow-inner text-[11px] leading-relaxed font-serif text-slate-900 space-y-3 cursor-pointer group relative transition-colors">
+                  <!-- Badge Petunjuk Edit -->
+                  <div
+                    class="absolute top-3 right-3 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md opacity-80 group-hover:opacity-100 flex items-center space-x-1 shadow-xs transition-opacity">
+                    <i data-lucide="edit-2" class="w-3 h-3 text-amber-600"></i>
+                    <span>Klik untuk Edit</span>
+                  </div>
+
+                  <!-- Kop Surat Mini -->
+                  <div class="text-center pb-2 border-b-2 border-double border-slate-900 font-sans">
+                    <p class="text-[9px] uppercase font-bold text-slate-600 tracking-wider">KEMENTERIAN AGAMA REPUBLIK
+                      INDONESIA</p>
+                    <p class="text-[10px] font-extrabold text-slate-900 uppercase" id="sk-preview-kop-kemenag">KANTOR
+                      KEMENTERIAN AGAMA KABUPATEN TASIKMALAYA</p>
+                    <p class="text-[11px] font-black text-emerald-900 uppercase" id="sk-preview-kop-madrasah">MADRASAH
+                      TSANAWIYAH AL-FADLLIYAH</p>
+                    <p class="text-[8px] text-slate-500" id="sk-preview-kop-alamat-nsm">Jl. Raya Cikunten No. 45
+                      Singaparna, Tasikmalaya 46414 | NSM: 121232040018</p>
+                  </div>
+
+                  <!-- Judul Surat -->
+                  <div class="text-center font-sans">
+                    <p class="text-xs font-black uppercase underline tracking-wide">SURAT KETERANGAN PINDAH MADRASAH</p>
+                    <p class="text-[10px] font-medium text-slate-700" id="sk-preview-no">Nomor: -</p>
+                  </div>
+
+                  <!-- Isi Surat -->
+                  <div class="space-y-1.5 text-[10px] font-sans">
+                    <p>Yang bertanda tangan di bawah ini, <span id="sk-preview-lead-inst">Kepala Madrasah Tsanawiyah
+                        Al-Fadlliyah Singaparna</span>, menerangkan bahwa:</p>
+                    <div class="pl-3 space-y-0.5 border-l-2 border-slate-200">
+                      <p><span class="inline-block w-28 text-slate-500">Nama Siswa</span>: <strong
+                          id="sk-preview-nama">(Belum ada mutasi tercatat)</strong></p>
+                      <p><span class="inline-block w-28 text-slate-500">NISN / NIS</span>: <span
+                          id="sk-preview-nisn">-</span></p>
+                      <p><span class="inline-block w-28 text-slate-500">Tingkat / Rombel</span>: <span
+                          id="sk-preview-kelas">-</span></p>
+                      <p><span class="inline-block w-28 text-slate-500">Jenis Mutasi</span>: <span
+                          class="font-bold text-emerald-800" id="sk-preview-jenis">-</span></p>
+                      <p><span class="inline-block w-28 text-slate-500">Sekolah Asal/Tujuan</span>: <span
+                          id="sk-preview-sekolah">-</span></p>
+                    </div>
+                    <p class="pt-1">Sesuai permohonan dengan alasan: <em id="sk-preview-alasan">"-"</em>.</p>
+                  </div>
+
+                  <!-- Tanda Tangan & Stempel -->
+                  <div class="pt-3 flex justify-between items-end text-[9px] font-sans">
+                    <div class="text-center w-36">
+                      <p>Mengetahui,</p>
+                      <p>Kepala Tata Usaha</p>
+                      <div class="h-10 flex items-center justify-center text-slate-400 italic text-[8px]">
+                        [Tanda Tangan Digital]
+                      </div>
+                      <p class="font-bold underline" id="sk-preview-kepala-tu">Hj. Siti Rahmawati, S.Pd</p>
+                      <p class="text-[8px] text-slate-500" id="sk-preview-nip-tu">NIP. 197804122005012004</p>
+                    </div>
+                    <div class="text-center w-40">
+                      <p><span id="sk-preview-titimangsa-kota">Singaparna</span>, <span id="sk-preview-tanggal">18 Juli
+                          2024</span></p>
+                      <p>Kepala Madrasah,</p>
+                      <div class="h-10 flex items-center justify-center text-slate-400 italic text-[8px]">
+                        [Tanda Tangan Digital]
+                      </div>
+                      <p class="font-bold underline" id="sk-preview-kepala-madrasah">Drs. H. Ahmad Fadlli, M.Pd.I</p>
+                      <p class="text-[8px] text-slate-500" id="sk-preview-nip-kepala">NIP. 196908151994031002</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span>Format Dokumen Resmi Sah</span>
+                <span class="text-emerald-700 font-semibold">Siap Cetak ISO A4</span>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ========================================================
+             MODUL 4: PROGRAM BEASISWA & BANTUAN (BS-01 S/D BS-04)
+             ======================================================== -->
+        <section id="tab-beasiswa" class="tab-content hidden space-y-6">
+
+          <!-- Metrik 3 Pilar Bantuan (PRD BS-01 - Bebas Tahfidz) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="beasiswa-pillar-cards">
+            <!-- Diisi via JS dinamis -->
+          </div>
+
+          <!-- Baris Aksi Beasiswa & Toolbar Rekap -->
+          <div
+            class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-slate-600">Filter Kategori:</span>
+              <select id="filter-beasiswa-pilar"
+                class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none">
+                <option value="ALL">Semua Program Beasiswa</option>
+                <!-- Opsi pilar diisi secara dinamis via JS -->
+              </select>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Tambah Program / Pilar Beasiswa Custom -->
+              <button id="btn-open-add-beasiswa-pillar"
+                class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold transition-all shadow-sm">
+                <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i>
+                <span>+ Program Beasiswa Baru</span>
+              </button>
+
+              <!-- BS-03 Cetak Rekap Beasiswa -->
+              <button id="btn-print-rekap-beasiswa"
+                class="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-white border border-slate-300 text-slate-700 hover:text-emerald-700 hover:border-emerald-600 rounded-xl text-xs font-bold transition-all shadow-sm">
+                <i data-lucide="printer" class="w-4 h-4 text-emerald-600"></i>
+                <span>Cetak Rekapitulasi Beasiswa</span>
+              </button>
+
+              <!-- BS-02 + Tambah Penerima Baru -->
+              <button id="btn-open-add-beasiswa"
+                class="inline-flex items-center space-x-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>+ Tambah Penerima Baru</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- BS-04 Tabel Data Penerima Beasiswa & Evaluasi -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900">Daftar Penerima & Status Pencairan Semester Berjalan
+                </h3>
+                <p class="text-xs text-slate-500">Pemantauan transparansi dana bantuan afirmasi & prestasi siswa
+                  madrasah.</p>
+              </div>
+              <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full"
+                id="beasiswa-total-realisasi">Total Realisasi: Rp 0</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                    <th class="py-3 px-4 whitespace-nowrap">Nama Siswa</th>
+                    <th class="py-3 px-4 whitespace-nowrap">NISN / Kelas</th>
+                    <th class="py-3 px-4 whitespace-nowrap">Kategori Pilar</th>
+                    <th class="py-3 px-4 whitespace-nowrap">Nominal / Semester</th>
+                    <th class="py-3 px-4 text-center whitespace-nowrap">Status Pencairan</th>
+                    <th class="py-3 px-4 whitespace-nowrap">Evaluasi / Catatan BK</th>
+                    <th class="py-3 px-4 text-right whitespace-nowrap">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs text-slate-700" id="beasiswa-table-body">
+                  <!-- Diisi dinamis via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ========================================================
+             MODUL 5: IDENTITAS RAPOR & FORMAT KMA 450/2024 (IR-01 S/D IR-06)
+             ======================================================== -->
+        <section id="tab-rapor" class="tab-content hidden space-y-6">
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Sisi Kiri: Formulir Pengaturan Parameter Rapor (5 Kolom) -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+              <div>
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase mb-1">
+                  Standar KMA No. 450/2024
+                </span>
+                <h3 class="text-base font-extrabold text-slate-900">Format Sampul Rapor KMA No. 450/2024</h3>
+                <p class="text-xs text-slate-500">Konfigurasi parameter lembar muka identitas rapor Kurikulum Merdeka.
+                </p>
+              </div>
+
+              <!-- Form Input Parameter -->
+              <form id="form-rapor-config" class="space-y-4 text-xs font-medium">
+
+                <!-- Pilih Siswa untuk Sampul -->
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Pilih Sampel Data Siswa:</label>
+                  <select id="rapor-select-siswa"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-semibold text-slate-800">
+                    <!-- Diisi dinamis -->
+                  </select>
+                </div>
+
+                <!-- Nomenklatur Lembaga (IR-01) -->
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Nama Madrasah Resmi:</label>
+                  <input type="text" id="rapor-input-nama-madrasah" value="Madrasah Tsanawiyah Al-Fadlliyah"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">NSM:</label>
+                    <input type="text" id="rapor-input-nsm" value="121232040018"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                  </div>
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">NPSN:</label>
+                    <input type="text" id="rapor-input-npsn" value="69948210"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                  </div>
+                </div>
+
+                <!-- Alamat Madrasah -->
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">Alamat Madrasah:</label>
+                  <input type="text" id="rapor-input-alamat"
+                    value="Jl. Raya Cikunten No. 45 Singaparna, Kab. Tasikmalaya 46414"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+
+                <!-- Legitimasi Pejabat (IR-02) -->
+                <div class="pt-2 border-t border-slate-100">
+                  <label class="block text-slate-700 font-bold mb-1">Nama Kepala Madrasah:</label>
+                  <input type="text" id="rapor-input-kepala" value="Drs. H. Ahmad Fadlli, M.Pd.I"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+
+                <div>
+                  <label class="block text-slate-700 font-bold mb-1">NIP Kepala Madrasah:</label>
+                  <input type="text" id="rapor-input-nip" value="196908151994031002"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+
+                <!-- Titimangsa & Kalender Rapor (IR-03) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">Kota Titimangsa:</label>
+                    <input type="text" id="rapor-input-titimangsa" value="Tasikmalaya"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+                  </div>
+                  <div>
+                    <label class="block text-slate-700 font-bold mb-1">Tanggal Terbit Rapor*:</label>
+                    <input type="date" id="rapor-input-tanggal" value="2024-12-21" onclick="this.showPicker && this.showPicker()"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+                  </div>
+                </div>
+
+                <!-- Preferensi Format Cetak (IR-04) -->
+                <div class="pt-2 border-t border-slate-100 space-y-2">
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="rapor-check-watermark" checked class="w-4 h-4 text-emerald-600 rounded">
+                    <span class="text-slate-700 font-semibold">Tampilkan Watermark Lambang Madrasah Pudar (5%)</span>
+                  </label>
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="rapor-check-margin" checked class="w-4 h-4 text-emerald-600 rounded">
+                    <span class="text-slate-700 font-semibold">Beri Garis Batas Margin Jilid Standar (2.0 cm)</span>
+                  </label>
+                </div>
+
+                <!-- Tombol Aksi Formulir (IR-06) -->
+                <div class="pt-4 flex flex-wrap gap-2">
+                  <button type="button" id="btn-save-rapor-config"
+                    class="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm text-xs transition-colors">
+                    Simpan Konfigurasi
+                  </button>
+                  <button type="button" id="btn-reset-rapor-config"
+                    class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors">
+                    Reset Default
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Sisi Kanan: Live Interactive Preview A4 Sampul Rapor (7 Kolom) -->
+            <div class="lg:col-span-7 flex flex-col items-center">
+
+              <!-- Toolbar Pratinjau Atas -->
+              <div
+                class="w-full max-w-[210mm] mb-3 flex items-center justify-between bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center space-x-2 text-xs font-bold text-slate-700">
+                  <i data-lucide="eye" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Pratinjau Kertas ISO A4 (210 x 297 mm)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button id="btn-print-rapor"
+                    class="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-md shadow-emerald-600/20 transition-all">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span>Cetak Sampul Rapor</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- KERTAS A4 PREVIEW (IR-05) -->
+              <div class="w-full overflow-x-auto pb-4 flex justify-center">
+                <div id="rapor-a4-sheet"
+                  class="a4-sheet-preview p-10 border border-slate-300 rounded-lg flex flex-col justify-between text-slate-900 relative overflow-hidden bg-white shrink-0">
+
+                  <!-- Watermark Background -->
+                  <div id="rapor-watermark-el" class="watermark-emblem flex items-center justify-center">
+                    <svg class="w-64 h-64 text-emerald-900" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
+                  </div>
+
+                  <!-- Margin Border Pembatas -->
+                  <div id="rapor-margin-border"
+                    class="border-2 border-slate-800 p-8 flex flex-col justify-between h-full relative z-10">
+
+                    <!-- Bagian Atas: Lambang & Judul Resmi -->
+                    <div class="text-center space-y-4">
+                      <!-- Logo Madrasah & Kemenag RI -->
+                      <div class="flex justify-center items-center space-x-6">
+                        <div id="rapor-cover-logo"
+                          class="w-16 h-16 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shadow-md overflow-hidden">
+                          <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="space-y-1">
+                        <p class="text-xs uppercase tracking-widest font-semibold text-slate-600">KEMENTERIAN AGAMA
+                          REPUBLIK INDONESIA</p>
+                        <h2 class="text-2xl font-black tracking-tight text-slate-900 uppercase">RAPOR PESERTA DIDIK</h2>
+                        <h3 class="text-lg font-bold text-emerald-900 uppercase">MADRASAH TSANAWIYAH (MTs)</h3>
+                        <p class="text-[11px] font-medium text-slate-500 italic">Standar Keputusan Menteri Agama (KMA)
+                          No. 450 Tahun 2024</p>
+                      </div>
+                    </div>
+
+                    <!-- Bagian Tengah: Kotak Nama Siswa & Identitas -->
+                    <div class="my-auto py-8 space-y-6 text-center">
+                      <p class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Nama Peserta Didik:</p>
+
+                      <div
+                        class="border-2 border-slate-800 px-6 py-4 rounded-xl inline-block max-w-lg w-full bg-slate-50/50">
+                        <h1 class="text-xl md:text-2xl font-black text-slate-900 uppercase" id="rapor-display-nama">
+                          (DATA SISWA BELUM TERSEDIA)
+                        </h1>
+                      </div>
+
+                      <div class="space-y-1">
+                        <p class="text-xs text-slate-600">Nomor Induk Siswa Nasional (NISN) / NIS:</p>
+                        <p class="text-base font-extrabold tracking-wider text-slate-900" id="rapor-display-nisn">
+                          - / -
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Bagian Bawah: Nomenklatur Lembaga & Titimangsa -->
+                    <div class="text-center space-y-4 pt-6 border-t border-slate-300">
+                      <div class="space-y-0.5">
+                        <h4 class="text-base font-black text-slate-900 uppercase" id="rapor-display-madrasah">
+                          Madrasah Tsanawiyah Al-Fadlliyah
+                        </h4>
+                        <p class="text-xs text-slate-600" id="rapor-display-nsm-npsn">
+                          NSM: 121232040018 | NPSN: 69948210
+                        </p>
+                        <p class="text-[11px] text-slate-500 max-w-md mx-auto" id="rapor-display-alamat">
+                          Jl. Raya Cikunten No. 45, Desa Cikunten, Kec. Singaparna, Kabupaten Tasikmalaya
+                        </p>
+                      </div>
+
+                      <div class="pt-2 text-xs font-bold text-emerald-800">
+                        <span id="rapor-display-kota">Tasikmalaya</span>, <span id="rapor-display-tanggal">21 Desember
+                          2024</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ========================================================
+             MODUL 6: PENGATURAN SISTEM (PG-01 S/D PG-04)
+             ======================================================== -->
+        <section id="tab-pengaturan" class="tab-content hidden space-y-6">
+
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+
+            <!-- Sub-Tabs Header -->
+            <div
+              class="flex border-b border-slate-200 bg-slate-50/60 overflow-x-auto whitespace-nowrap scrollbar-none text-xs font-bold">
+              <button onclick="switchSettingsSubTab('sub-profil')" id="subnav-profil"
+                class="settings-subnav active px-4 sm:px-5 py-3 sm:py-3.5 border-b-2 border-emerald-600 text-emerald-700 bg-white shrink-0">
+                Profil Lembaga & Akreditasi
+              </button>
+              <button onclick="switchSettingsSubTab('sub-tingkat-rombel')" id="subnav-tingkat-rombel"
+                class="settings-subnav px-4 sm:px-5 py-3 sm:py-3.5 text-slate-600 hover:text-slate-900 shrink-0">
+                Tingkat & Rombel Belajar
+              </button>
+              <button onclick="switchSettingsSubTab('sub-kalender')" id="subnav-kalender"
+                class="settings-subnav px-4 sm:px-5 py-3 sm:py-3.5 text-slate-600 hover:text-slate-900 shrink-0">
+                Tahun Akademik & Kalender
+              </button>
+              <button onclick="switchSettingsSubTab('sub-pengguna')" id="subnav-pengguna"
+                class="settings-subnav px-4 sm:px-5 py-3 sm:py-3.5 text-slate-600 hover:text-slate-900 shrink-0">
+                Pengguna & Hak Akses
+              </button>
+              <button onclick="switchSettingsSubTab('sub-backup')" id="subnav-backup"
+                class="settings-subnav px-4 sm:px-5 py-3 sm:py-3.5 text-slate-600 hover:text-slate-900 shrink-0">
+                Cadangkan & Pulihkan (Backup)
+              </button>
+            </div>
+
+            <!-- SUB-TAB 1: PROFIL LEMBAGA (PG-01) -->
+            <div id="sub-profil" class="settings-subtab p-6 space-y-5">
+              <div class="max-w-2xl space-y-5 text-xs">
+
+                <!-- KARTU PENGATURAN LOGO RESMI MADRASAH -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                  <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-200/80">
+                    <div>
+                      <h4 class="font-extrabold text-slate-900 text-sm flex items-center space-x-2">
+                        <i data-lucide="image" class="w-4 h-4 text-emerald-600"></i>
+                        <span>Logo Resmi Lembaga / Madrasah</span>
+                      </h4>
+                      <p class="text-slate-500 text-[11px] mt-0.5">
+                        Logo ini otomatis diterapkan pada header sidebar website, sampul rapor digital, kop surat
+                        mutasi, dan dokumen cetak resmi.
+                      </p>
+                    </div>
+                    <span id="logo-status-badge"
+                      class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700 whitespace-nowrap">
+                      Logo Bawaan Sistem
+                    </span>
+                  </div>
+
+                  <div class="flex flex-col sm:flex-row items-center gap-5 pt-1">
+                    <!-- Logo Preview Box -->
+                    <div class="relative group shrink-0">
+                      <div id="inst-logo-preview-box"
+                        class="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center p-2 shadow-sm overflow-hidden group-hover:border-emerald-500 transition-all">
+                        <div class="text-center text-slate-400">
+                          <i data-lucide="image" class="w-8 h-8 mx-auto mb-1 stroke-1 text-slate-300"></i>
+                          <span class="text-[10px] block font-semibold text-slate-400">Logo Standar</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Upload Controls & Keterangan -->
+                    <div class="space-y-2 text-center sm:text-left flex-1">
+                      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <input type="file" id="input-inst-logo"
+                          accept="image/png, image/jpeg, image/jpg, image/webp, image/svg+xml" class="hidden"
+                          onchange="handleInstitutionLogoUpload(event)">
+
+                        <label for="input-inst-logo"
+                          class="cursor-pointer inline-flex items-center space-x-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                          <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                          <span>Pilih & Unggah Logo</span>
+                        </label>
+
+                        <button type="button" onclick="removeInstitutionLogo()" id="btn-remove-logo"
+                          class="hidden inline-flex items-center space-x-1 px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-all">
+                          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                          <span>Hapus / Kembalikan Standar</span>
+                        </button>
+                      </div>
+
+                      <p class="text-[11px] text-slate-500 leading-relaxed">
+                        Format disarankan: PNG transparan (aspek rasio 1:1 persegi, min. 200x200 px). Ukuran berkas
+                        maksimal 2 MB.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Formulir Data Profil Lembaga & Akreditasi -->
+                <div class="space-y-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Nama Madrasah / Satuan Pendidikan:</label>
+                      <input type="text" id="set-inst-name"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-semibold"
+                        value="Madrasah Tsanawiyah Al-Fadlliyah">
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Status Akreditasi Lembaga:</label>
+                      <input type="text" id="set-inst-akreditasi"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-emerald-800 font-bold outline-none focus:border-emerald-600"
+                        value="A (Unggul) - BAN-S/M Nilai 96">
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Nomor Statistik Madrasah (NSM):</label>
+                      <input type="text" id="set-inst-nsm"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono"
+                        value="121232040018">
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">NPSN:</label>
+                      <input type="text" id="set-inst-npsn"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono"
+                        value="69948210">
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">SK Izin Operasional / Akreditasi:</label>
+                      <input type="text" id="set-inst-sk-akreditasi"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 text-xs"
+                        value="SK BAN-S/M No. 1857/BAN-SM/SK/2023">
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap:</label>
+                    <input type="text" id="set-inst-alamat"
+                      class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"
+                      value="Jl. Raya Cikunten No. 45, Desa Cikunten, Kec. Singaparna">
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Kabupaten / Kota (Kemenag):</label>
+                      <input type="text" id="set-inst-kota"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"
+                        value="Kabupaten Tasikmalaya">
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Kota Titimangsa Dokumen (Rapor / SK):</label>
+                      <input type="text" id="set-inst-titimangsa"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"
+                        value="Tasikmalaya">
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Telepon Resmi:</label>
+                      <input type="text" id="set-inst-telepon"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"
+                        value="(0265) 543890">
+                    </div>
+                    <div>
+                      <label class="block font-bold text-slate-700 mb-1">Email Resmi Madrasah:</label>
+                      <input type="email" id="set-inst-email"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"
+                        value="mts.alfadlliyah.tsm@gmail.com">
+                    </div>
+                  </div>
+
+                  <!-- Legitimasi Pimpinan & Penandatangan Dokumen -->
+                  <div class="pt-3 border-t border-slate-200">
+                    <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-3">Legitimasi
+                      Penandatangan Dokumen Resmi (SK Mutasi & Rapor)</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div class="space-y-3 bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                        <div>
+                          <label class="block font-bold text-slate-700 mb-1">Nama Kepala Madrasah:</label>
+                          <input type="text" id="set-inst-kepala"
+                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-semibold"
+                            value="Drs. H. Ahmad Fadlli, M.Pd.I">
+                        </div>
+                        <div>
+                          <label class="block font-bold text-slate-700 mb-1">NIP Kepala Madrasah:</label>
+                          <input type="text" id="set-inst-nip-kepala"
+                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono"
+                            value="196908151994031002">
+                        </div>
+                      </div>
+
+                      <div class="space-y-3 bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                        <div>
+                          <label class="block font-bold text-slate-700 mb-1">Nama Kepala Tata Usaha (TU):</label>
+                          <input type="text" id="set-inst-tu"
+                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-semibold"
+                            value="Hj. Siti Rahmawati, S.Pd">
+                        </div>
+                        <div>
+                          <label class="block font-bold text-slate-700 mb-1">NIP Kepala Tata Usaha:</label>
+                          <input type="text" id="set-inst-nip-tu"
+                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono"
+                            value="197804122005012004">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="pt-4 flex flex-wrap items-center gap-3">
+                    <button type="button" onclick="saveInstitutionSettings()"
+                      class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center space-x-1.5">
+                      <i data-lucide="check-circle" class="w-4 h-4"></i>
+                      <span>Simpan Perubahan Profil & Akreditasi</span>
+                    </button>
+                    <span class="text-[11px] text-slate-500">Perubahan akan langsung diperbarui ke SK Mutasi, Sampul
+                      Rapor, Dashboard, dan seluruh modul secara serentak.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUB-TAB: TINGKAT & ROMBEL BELAJAR -->
+            <div id="sub-tingkat-rombel" class="settings-subtab hidden p-6 space-y-8">
+              <!-- Bagian 1: Kustomisasi Tingkat Kelas -->
+              <div class="space-y-4">
+                <div
+                  class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm">1. Kustomisasi Tingkat Kelas</h4>
+                    <p class="text-xs text-slate-500">Kelola jenjang tingkatan kelas aktif pada madrasah.</p>
+                  </div>
+                  <button onclick="openAddTingkatModal()"
+                    class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Tambah Tingkat</span>
+                  </button>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr
+                        class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase border-b border-slate-200">
+                        <th class="py-2.5 px-4 whitespace-nowrap">Kode Tingkat</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Nama Tingkat Kelas</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Fase Kurikulum</th>
+                        <th class="py-2.5 px-4 text-center whitespace-nowrap">Jumlah Rombel</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Keterangan</th>
+                        <th class="py-2.5 px-4 text-right whitespace-nowrap">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100" id="table-tingkat-body">
+                      <!-- Diisi dinamis -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Pembatas Visual -->
+              <div class="border-t border-slate-200"></div>
+
+              <!-- Bagian 2: Kustomisasi Rombongan Belajar (Rombel) -->
+              <div class="space-y-4">
+                <div
+                  class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm">2. Kustomisasi Rombongan Belajar (Rombel)</h4>
+                    <p class="text-xs text-slate-500">Kelola pembagian rombel, nama kelas, wali kelas, daya tampung, dan
+                      fokus capaian.</p>
+                  </div>
+                  <button type="button" onclick="openAddRombelModal()"
+                    class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Tambah Rombel Baru</span>
+                  </button>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr
+                        class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase border-b border-slate-200">
+                        <th class="py-2.5 px-4 whitespace-nowrap">Kode Rombel</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Nama Rombongan Belajar</th>
+                        <th class="py-2.5 px-4 text-center whitespace-nowrap">Tingkat</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Wali Kelas</th>
+                        <th class="py-2.5 px-4 text-center whitespace-nowrap">Kapasitas</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Fokus Capaian / Program</th>
+                        <th class="py-2.5 px-4 text-right whitespace-nowrap">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100" id="table-rombel-body">
+                      <!-- Diisi dinamis via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUB-TAB 2: TAHUN AKADEMIK & KALENDER (PG-02) -->
+            <div id="sub-kalender" class="settings-subtab hidden p-6 space-y-5 text-xs">
+
+              <!-- Manajemen Tahun Ajaran & Status Sinkronisasi Navbar -->
+              <div class="space-y-4">
+                <div
+                  class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm">Daftar Tahun Pelajaran & Semester</h4>
+                    <p class="text-xs text-slate-500">
+                      Tahun ajaran aktif disinkronkan langsung dengan selektor navbar. Tiap tahun ajaran menyimpan data
+                      kesiswaan dan kalendernya masing-masing.
+                    </p>
+                  </div>
+                  <button onclick="openAddAcademicYearModal()"
+                    class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Tambah Tahun Pelajaran Baru</span>
+                  </button>
+                </div>
+
+                <!-- Tabel Tahun Akademik -->
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                  <table class="w-full text-left text-xs">
+                    <thead>
+                      <tr
+                        class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase border-b border-slate-200">
+                        <th class="py-2.5 px-4 whitespace-nowrap">Tahun Pelajaran</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap text-center">Semester</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Rentang Waktu Efektif</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Batas Kunci Nilai</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap">Bagi Rapor</th>
+                        <th class="py-2.5 px-4 whitespace-nowrap text-center">Status</th>
+                        <th class="py-2.5 px-4 text-right whitespace-nowrap">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100" id="table-academic-years-body">
+                      <!-- Diisi dinamis via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- SUB-TAB 3: PENGGUNA & HAK AKSES (PG-03) -->
+            <div id="sub-pengguna" class="settings-subtab hidden p-6 space-y-4">
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                <div>
+                  <h4 class="font-extrabold text-slate-900 text-sm">Manajemen Pengguna & Staf SIDASI</h4>
+                  <p class="text-xs text-slate-500">Kelola akun pejabat, operator madrasah, dan hak akses pengguna
+                    sistem.</p>
+                </div>
+                <button onclick="openAddUserModal()"
+                  class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Tambah Pengguna</span>
+                </button>
+              </div>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr
+                      class="bg-slate-50 text-[11px] font-extrabold text-slate-600 uppercase border-b border-slate-200">
+                      <th class="py-2.5 px-4 whitespace-nowrap">Nama Pejabat / Staf</th>
+                      <th class="py-2.5 px-4 whitespace-nowrap">Username</th>
+                      <th class="py-2.5 px-4 whitespace-nowrap">Peran (Role)</th>
+                      <th class="py-2.5 px-4 whitespace-nowrap">Cakupan Akses</th>
+                      <th class="py-2.5 px-4 text-center whitespace-nowrap">Status</th>
+                      <th class="py-2.5 px-4 text-right whitespace-nowrap">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100" id="users-table-body">
+                    <!-- Diisi dinamis -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- SUB-TAB 4: CADANGKAN & PULIHKAN DATA (PG-04) -->
+            <div id="sub-backup" class="settings-subtab hidden p-6 space-y-6">
+              <div>
+                <h4 class="font-extrabold text-slate-900 text-sm">Pencadangan Mandiri (Backup & Restore)</h4>
+                <p class="text-xs text-slate-500">Kemandirian penuh data lokal madrasah tanpa server cloud eksternal.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <!-- Card Backup -->
+                <div
+                  class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between space-y-4">
+                  <div>
+                    <div class="flex items-center space-x-2 text-emerald-800 font-extrabold text-sm mb-1">
+                      <i data-lucide="hard-drive-download" class="w-5 h-5"></i>
+                      <span>Cadangkan Basis Data Lokal</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                      Unduh seluruh arsip data siswa, riwayat mutasi, rekapitulasi beasiswa, dan parameter sistem dalam
+                      format snapshot (.sql.gz / .json).
+                    </p>
+                  </div>
+                  <button id="btn-do-backup"
+                    class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 shadow-sm">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Unduh Cadangan Lengkap (.sql.gz)</span>
+                  </button>
+                </div>
+
+                <!-- Card Restore -->
+                <div
+                  class="p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-4">
+                  <div>
+                    <div class="flex items-center space-x-2 text-slate-800 font-extrabold text-sm mb-1">
+                      <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                      <span>Pulihkan Data dari Cadangan</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                      Unggah berkas cadangan arsip tersimpan untuk memulihkan seluruh catatan kesiswaan madrasah secara
+                      instan.
+                    </p>
+                  </div>
+                  <div>
+                    <input type="file" id="input-restore-file" accept=".json,.sql,.gz" class="hidden">
+                    <button onclick="document.getElementById('input-restore-file').click()"
+                      class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-xs transition-all flex items-center justify-center space-x-2 shadow-sm">
+                      <i data-lucide="upload" class="w-4 h-4"></i>
+                      <span>Pilih Berkas Cadangan (.sql.gz / .json)</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Integrasi & Migrasi Berkas Microsoft Excel -->
+              <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div>
+                    <h4 class="font-extrabold text-slate-900 text-sm flex items-center space-x-2">
+                      <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+                      <span>Migrasi & Olah Data Berkas Microsoft Excel (.xlsx / .csv)</span>
+                    </h4>
+                    <p class="text-xs text-slate-500">
+                      Ekspor data kesiswaan aktif ke format Excel resmi atau impor data lama madrasah ke dalam sistem
+                      SIDASI.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <button onclick="exportStudentsToExcel()"
+                    class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-left transition-all flex flex-col justify-between space-y-2 group">
+                    <div
+                      class="flex items-center space-x-2 text-emerald-800 font-bold text-xs group-hover:text-emerald-700">
+                      <i data-lucide="download" class="w-4 h-4 text-emerald-600"></i>
+                      <span>Ekspor Data ke Excel</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500">Unduh seluruh buku induk siswa aktif ke lembar kerja Excel
+                      (.xlsx).</p>
+                  </button>
+
+                  <button onclick="openImportExcelModal()"
+                    class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-left transition-all flex flex-col justify-between space-y-2 group">
+                    <div
+                      class="flex items-center space-x-2 text-emerald-800 font-bold text-xs group-hover:text-emerald-700">
+                      <i data-lucide="upload" class="w-4 h-4 text-emerald-600"></i>
+                      <span>Impor Data dari Excel</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500">Masukkan data arsip lama atau data baru dari berkas Excel/CSV.
+                    </p>
+                  </button>
+
+                  <button onclick="downloadStudentExcelTemplate()"
+                    class="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/40 text-left transition-all flex flex-col justify-between space-y-2 group">
+                    <div
+                      class="flex items-center space-x-2 text-emerald-800 font-bold text-xs group-hover:text-emerald-700">
+                      <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i>
+                      <span>Unduh Template Excel</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500">Dapatkan format kolom standar resmi untuk persiapan data.</p>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Zona Pengosongan / Hapus Semua Basis Data -->
+              <div class="p-5 rounded-2xl bg-rose-50/70 border border-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2 text-rose-800 font-extrabold text-sm">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-rose-600"></i>
+                    <span>Hapus & Kosongkan Seluruh Basis Data</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed max-w-xl">
+                    Mengosongkan seluruh data buku induk siswa, riwayat mutasi resmi, data beasiswa, rombel belajar, dan kalkulasi statistik. 
+                    <strong class="text-rose-900 font-bold">Akun login administrator (<code class="bg-rose-100 px-1 py-0.5 rounded font-mono">admin</code>) tetap aman dan tidak akan terhapus.</strong>
+                  </p>
+                </div>
+                <button type="button" onclick="openWipeDatabaseModal()"
+                  class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all flex items-center space-x-2 shadow-sm whitespace-nowrap shrink-0">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  <span>Hapus Semua Basis Data</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- FOOTER GLOBAL APLIKASI -->
+        <footer
+          class="mt-8 pt-5 pb-2 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-slate-800">SIDASI MTs Al-Fadlliyah</span>
+            <span>•</span>
+            <span>Sistem Informasi Data Siswa</span>
+          </div>
+          <div>
+            <span>Hak Cipta © 2026 </span>
+            <span class="font-bold text-emerald-800">Ravi SQ. Moh. Zein Permana</span>
+            <span>. All rights reserved.</span>
+          </div>
+        </footer>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================
+       PANEL SAMPING (DRAWER): DETAIL BUKU INDUK SISWA (BI-04)
+       ======================================================== -->
+  <div id="drawer-student-detail" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 backdrop-blur-custom transition-opacity" onclick="closeStudentDrawer()"></div>
+
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+      <div
+        class="w-screen max-w-full sm:max-w-md bg-white shadow-2xl flex flex-col justify-between border-l border-slate-200">
+
+        <!-- Header Drawer -->
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+          <div>
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 uppercase"
+              id="drawer-badge-title">
+              Lembar Buku Induk
+            </span>
+            <h3 class="text-base font-extrabold text-slate-900 mt-0.5" id="drawer-main-title">Detail Catatan Siswa</h3>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="btn-drawer-edit-toggle" onclick="toggleEditStudentDrawer()" title="Edit Data Siswa"
+              class="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-white border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 text-slate-700 rounded-lg text-xs font-bold transition-all shadow-sm">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5 text-emerald-600"></i>
+              <span id="drawer-btn-edit-text">Edit</span>
+            </button>
+            <button onclick="closeStudentDrawer()"
+              class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-lg">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Konten Detail Siswa (Scrollable) -->
+        <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-700" id="drawer-student-content">
+          <!-- Diisi dinamis via JS -->
+        </div>
+
+        <!-- Footer Drawer Aksi Cetak & Tutup & Simpan -->
+        <div class="p-3 sm:p-4 border-t border-slate-200 bg-slate-50 flex flex-wrap sm:flex-nowrap gap-2 items-center"
+          id="drawer-footer-actions">
+          <button id="btn-drawer-print-induk"
+            class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 shadow-sm">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Cetak A4</span>
+          </button>
+          <button onclick="toggleEditStudentDrawer()"
+            class="py-2 px-3 bg-white border border-slate-300 hover:border-emerald-600 hover:text-emerald-700 text-slate-700 font-bold rounded-xl text-xs flex items-center space-x-1.5 shadow-sm">
+            <i data-lucide="edit-3" class="w-4 h-4 text-emerald-600"></i>
+            <span>Edit Data</span>
+          </button>
+          <button id="btn-drawer-delete-student"
+            onclick="deleteStudent(selectedStudentForDrawer ? selectedStudentForDrawer.id : null)"
+            class="py-2 px-3 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-xl text-xs flex items-center space-x-1 transition-all"
+            title="Hapus Siswa">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Hapus</span>
+          </button>
+          <button onclick="closeStudentDrawer()"
+            class="py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs">
+            Tutup
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH SISWA BARU (BI-01 - STANDAR EMIS RESMI)
+       ======================================================== -->
+  <div id="modal-add-student" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddStudentModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Buku Induk Digital • Standar EMIS Kemenag
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Tambah Peserta Didik Baru</h3>
+        </div>
+        <button onclick="closeAddStudentModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-student" class="space-y-5 text-xs font-medium">
+        
+        <!-- BAGIAN 1: IDENTITAS PRIBADI SISWA -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="user" class="w-4 h-4 text-emerald-600"></i>
+            <span>1. Data Identitas Pokok Siswa</span>
+          </h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">NISN (10 Digit)*:</label>
+              <input type="text" id="add-nisn" maxlength="10" placeholder="Contoh: 0098432190" required
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">NIS Madrasah*:</label>
+              <input type="text" id="add-nis" placeholder="Contoh: 242507001" required
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">NIK Siswa (16 Digit)*:</label>
+              <input type="text" id="add-nik" maxlength="16" placeholder="Contoh: 3206231405090001" required
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa*:</label>
+            <input type="text" id="add-nama" placeholder="Nama lengkap sesuai akta kelahiran / ijazah sebelumnya" required
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-semibold text-slate-900">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Tempat Lahir*:</label>
+              <input type="text" id="add-tempat-lahir" placeholder="Contoh: Tasikmalaya" required
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Tanggal Lahir*:</label>
+              <input type="date" id="add-tanggal-lahir" required onclick="this.showPicker && this.showPicker()"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Jenis Kelamin*:</label>
+              <select id="add-jk"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <option value="L">Laki-laki (L)</option>
+                <option value="P">Perempuan (P)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Agama*:</label>
+              <select id="add-agama"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <option value="Islam" selected>Islam</option>
+                <option value="Kristen">Kristen</option>
+                <option value="Katholik">Katholik</option>
+                <option value="Hindu">Hindu</option>
+                <option value="Buddha">Buddha</option>
+                <option value="Konghucu">Konghucu</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Jumlah Saudara Kandung:</label>
+              <input type="number" id="add-jml-saudara" min="0" placeholder="Contoh: 2"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 2: AKADEMIK, ROMBEL & STATUS MASUK -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-600"></i>
+            <span>2. Data Akademik, Kelas & Rombel Belajar</span>
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Tingkat Kelas*:</label>
+              <select id="add-tingkat"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <!-- Diisi dinamis -->
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kelas / Rombel Belajar*:</label>
+              <select id="add-rombel"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <!-- Diisi dinamis -->
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kelompok / Program:</label>
+              <input type="text" id="add-kelompok" placeholder="Contoh: Reguler / Unggulan / Tahfidz"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Tanggal Masuk Madrasah:</label>
+              <input type="date" id="add-tanggal-masuk" onclick="this.showPicker && this.showPicker()"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Status Domisili Siswa*:</label>
+              <select id="add-domisili"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <option value="Mukim (Pondok)">Mukim (Pondok Pesantren)</option>
+                <option value="Non-Mukim" selected>Non-Mukim (Pelajar Laju)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Asrama / Kamar (Jika Mukim):</label>
+              <input type="text" id="add-asrama" placeholder="Contoh: Komp. Al-Fatih Kamar 04"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 3: DATA ORANG TUA / WALI -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="users" class="w-4 h-4 text-emerald-600"></i>
+            <span>3. Data Orang Tua Kandung & Wali</span>
+          </h4>
+
+          <!-- Data Ayah -->
+          <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2.5">
+            <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wide block">Data Ayah Kandung:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Nama Ayah Kandung*:</label>
+                <input type="text" id="add-ayah" placeholder="Contoh: H. Dani Ramdani" required
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">NIK Ayah Kandung:</label>
+                <input type="text" id="add-nik-ayah" maxlength="16" placeholder="Contoh: 3206230101780002"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Pendidikan Ayah:</label>
+                <input type="text" id="add-pendidikan-ayah" placeholder="Contoh: S1 / SMA / D3"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Pekerjaan Ayah:</label>
+                <input type="text" id="add-pekerjaan-ayah" placeholder="Contoh: Wiraswasta / PNS / Petani"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Penghasilan Ayah:</label>
+                <input type="text" id="add-penghasilan-ayah" placeholder="Contoh: Rp 3.000.000 - Rp 5.000.000"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Ibu -->
+          <div class="p-3 bg-white border border-slate-200 rounded-xl space-y-2.5">
+            <span class="text-[11px] font-bold text-slate-700 uppercase tracking-wide block">Data Ibu Kandung:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Nama Ibu Kandung*:</label>
+                <input type="text" id="add-nama-ibu" placeholder="Contoh: Hj. Imas Masitoh" required
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">NIK Ibu Kandung:</label>
+                <input type="text" id="add-nik-ibu" maxlength="16" placeholder="Contoh: 3206234502800001"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Pekerjaan Ibu:</label>
+                <input type="text" id="add-pekerjaan-ibu" placeholder="Contoh: Ibu Rumah Tangga / Guru / Pedagang"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+              <div>
+                <label class="block font-bold text-slate-600 mb-1">Penghasilan Ibu:</label>
+                <input type="text" id="add-penghasilan-ibu" placeholder="Contoh: Tidak Ada / Rp 1.500.000"
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">No. HP / WhatsApp Wali*:</label>
+            <input type="text" id="add-telepon" placeholder="Contoh: 081223456789"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+          </div>
+        </div>
+
+        <!-- BAGIAN 4: ALAMAT LENGKAP TEMPAT TINGGAL -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600"></i>
+            <span>4. Alamat Lengkap Domisili Siswa</span>
+          </h4>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Alamat Rumah (Jalan / Kampung / Dusun):</label>
+            <input type="text" id="add-alamat" placeholder="Contoh: Kp. Babakan Salam No. 12"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">RT / RW:</label>
+              <input type="text" id="add-rt-rw" placeholder="Contoh: 003/004"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kelurahan / Desa:</label>
+              <input type="text" id="add-kelurahan" placeholder="Contoh: Cikunten"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kecamatan:</label>
+              <input type="text" id="add-kecamatan" placeholder="Contoh: Singaparna"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kabupaten / Kota:</label>
+              <input type="text" id="add-kabupaten" placeholder="Contoh: Tasikmalaya"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 5: SEKOLAH ASAL, NO UJIAN & IJAZAH -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="book-marked" class="w-4 h-4 text-emerald-600"></i>
+            <span>5. Riwayat Sekolah Asal & Ijazah</span>
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nama Sekolah / Madrasah Asal (SD/MI):</label>
+              <input type="text" id="add-sekolah-asal" placeholder="Contoh: MI Al-Fadlliyah atau SDN 1 Singaparna"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">NPSN Sekolah Asal:</label>
+              <input type="text" id="add-npsn-asal" placeholder="Contoh: 20268412"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">No. Peserta Ujian SD/MI:</label>
+              <input type="text" id="add-no-ujian" placeholder="Contoh: 24-02-12-0012"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">No. Seri Ijazah SD/MI:</label>
+              <input type="text" id="add-no-ijazah" placeholder="Contoh: DN-02/D-SD/13/0012345"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <!-- BAGIAN 6: KEBUTUHAN KHUSUS, KETERANGAN & BERKAS FISIK -->
+        <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-xl space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs uppercase tracking-wider flex items-center space-x-1.5 text-emerald-800">
+            <i data-lucide="check-square" class="w-4 h-4 text-emerald-600"></i>
+            <span>6. Kebutuhan Khusus, Keterangan & Berkas Fisik</span>
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kebutuhan Khusus:</label>
+              <select id="add-kebutuhan"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+                <option value="Tidak Ada" selected>Tidak Ada</option>
+                <option value="Disabilitas Netra">Disabilitas Netra</option>
+                <option value="Disabilitas Rungu">Disabilitas Rungu</option>
+                <option value="Disabilitas Daksa">Disabilitas Daksa</option>
+                <option value="Disabilitas Grahita">Disabilitas Grahita</option>
+                <option value="Lamban Belajar">Lamban Belajar</option>
+                <option value="Autis">Autis</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Keterangan / Catatan BK:</label>
+              <input type="text" id="add-keterangan" placeholder="Catatan minat bakat, prestasi, atau status awal"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl outline-none focus:border-emerald-600">
+            </div>
+          </div>
+
+          <!-- Checklist Berkas Fisik -->
+          <div class="p-3 bg-white rounded-xl border border-slate-200 space-y-2 mt-2">
+            <p class="font-bold text-slate-800 text-[11px]">Checklist Dokumen Fisik yang Diterima:</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="add-b-akta" checked class="w-4 h-4 text-emerald-600 rounded">
+                <span class="text-[11px] text-slate-700">Akta Kelahiran</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="add-b-kk" checked class="w-4 h-4 text-emerald-600 rounded">
+                <span class="text-[11px] text-slate-700">Kartu Keluarga</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="add-b-ijazah" checked class="w-4 h-4 text-emerald-600 rounded">
+                <span class="text-[11px] text-slate-700">Ijazah SD/MI Asli</span>
+              </label>
+              <label class="flex items-center space-x-1.5 cursor-pointer">
+                <input type="checkbox" id="add-b-perjanjian" checked class="w-4 h-4 text-emerald-600 rounded">
+                <span class="text-[11px] text-slate-700">Surat Perjanjian</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-100 sticky bottom-0 bg-white py-2">
+          <button type="button" onclick="closeAddStudentModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md flex items-center space-x-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Simpan Data Siswa Lengkap</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM PENGAJUAN MUTASI BARU (MS-01)
+       ======================================================== -->
+  <div id="modal-add-mutation" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddMutationModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Administrasi Mutasi
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Ajukan Mutasi Siswa Baru</h3>
+        </div>
+        <button onclick="closeAddMutationModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-mutation" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Jenis Mutasi*:</label>
+          <select id="mut-add-jenis"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+            <option value="Mutasi Masuk">Mutasi Masuk (Dari Sekolah/Madrasah Luar)</option>
+            <option value="Mutasi Keluar">Mutasi Keluar (Pindah ke Sekolah/Madrasah Tujuan)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa*:</label>
+          <input type="text" id="mut-add-nama" list="datalist-mut-students" required placeholder="Ketik nama siswa atau pilih dari daftar..." autocomplete="off"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 focus:bg-white transition-all">
+          <datalist id="datalist-mut-students">
+            <!-- Diisi dinamis dengan daftar nama siswa aktif -->
+          </datalist>
+          <p id="mut-add-student-hint" class="text-[11px] text-emerald-700 font-bold mt-1.5 hidden"></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NISN*:</label>
+            <input type="text" id="mut-add-nisn" maxlength="10" required placeholder="0098..."
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tingkat Kelas*:</label>
+            <select id="mut-add-tingkat"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+              <!-- Diisi dinamis -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tanggal Terbit SK Mutasi*:</label>
+          <input type="date" id="mut-add-tanggal" required onclick="this.showPicker && this.showPicker()"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Madrasah / Sekolah Asal / Tujuan*:</label>
+          <input type="text" id="mut-add-sekolah" required placeholder="Contoh: SMP Negeri 1 Singaparna"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Alasan Kepindahan*:</label>
+          <textarea id="mut-add-alasan" rows="2" required
+            placeholder="Contoh: Mengikuti perpindahan tugas dinas orang tua dan mukim di asrama"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeAddMutationModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Terbitkan SK Mutasi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM EDIT SK MUTASI RESMI
+       ======================================================== -->
+  <div id="modal-edit-mutation" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeEditMutationModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase">
+            Edit Dokumen Resmi
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Edit Surat Keterangan Mutasi</h3>
+        </div>
+        <button onclick="closeEditMutationModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-edit-mutation" onsubmit="handleEditMutationSubmit(event)" class="space-y-4 text-xs font-medium">
+        <input type="hidden" id="mut-edit-id">
+
+        <!-- Nomor Surat & Tanggal -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nomor Surat SK*:</label>
+            <input type="text" id="mut-edit-no" required placeholder="105/MTs.10.06/PP.00.4/07/2024"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-mono text-xs">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tanggal Terbit Surat*:</label>
+            <input type="date" id="mut-edit-tanggal" required onclick="this.showPicker && this.showPicker()"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-medium text-slate-800 cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Jenis Mutasi & Nama Siswa -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Jenis Mutasi*:</label>
+            <select id="mut-edit-jenis"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+              <option value="Mutasi Masuk">Mutasi Masuk</option>
+              <option value="Mutasi Keluar">Mutasi Keluar</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa*:</label>
+            <input type="text" id="mut-edit-nama" required placeholder="Nama siswa"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-semibold text-slate-900">
+          </div>
+        </div>
+
+        <!-- NISN, NIS & Tingkat -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NISN (10 Digit)*:</label>
+            <input type="text" id="mut-edit-nisn" maxlength="10" required placeholder="0098..."
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NIS Lokal:</label>
+            <input type="text" id="mut-edit-nis" placeholder="242507001"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tingkat Kelas*:</label>
+            <select id="mut-edit-tingkat"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+              <!-- Diisi dinamis -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Sekolah Asal & Tujuan -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Sekolah / Madrasah Asal*:</label>
+            <input type="text" id="mut-edit-sekolah-asal" required placeholder="Nama sekolah asal"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Sekolah / Madrasah Tujuan*:</label>
+            <input type="text" id="mut-edit-sekolah-tujuan" required placeholder="Nama sekolah tujuan"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <!-- Alasan Kepindahan -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Alasan Permohonan Kepindahan*:</label>
+          <textarea id="mut-edit-alasan" rows="2.5" required
+            placeholder="Contoh: Mengikuti perpindahan tugas orang tua dan mukim di pondok pesantren"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <!-- Pejabat Penandatangan -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+          <p class="text-[11px] font-bold text-slate-700 uppercase tracking-wider">Pejabat Pengesah SK (Standar
+            Lembaga):</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-600 text-[11px] mb-1">Kepala Madrasah:</label>
+              <input type="text" id="mut-edit-kepala" placeholder="Nama Kepala Madrasah"
+                class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none text-xs">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-600 text-[11px] mb-1">Kepala Tata Usaha:</label>
+              <input type="text" id="mut-edit-tu" placeholder="Nama Kepala TU"
+                class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg outline-none text-xs">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-between border-t border-slate-100">
+          <button type="button" onclick="closeEditMutationModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md flex items-center space-x-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Simpan Perubahan SK</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH PENERIMA BEASISWA BARU (BS-02)
+       ======================================================== -->
+  <div id="modal-add-beasiswa" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddBeasiswaModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Program Bantuan
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Tambah Penerima Beasiswa Baru</h3>
+        </div>
+        <button onclick="closeAddBeasiswaModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-beasiswa" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Pilar Kategori Beasiswa*:</label>
+          <select id="bea-add-kategori"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+            <option value="Prestasi KSM & Akademik">Prestasi KSM & Akademik (Pembebasan Iuran/SPP)</option>
+            <option value="Afirmasi Dhuafa (Kerjasama BAZNAS)">Afirmasi Dhuafa (Kerjasama BAZNAS)</option>
+            <option value="Program Indonesia Pintar (PIP)">Program Indonesia Pintar (PIP)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa*:</label>
+          <input type="text" id="bea-add-nama" list="datalist-bea-students" required placeholder="Ketik nama siswa atau pilih dari daftar..." autocomplete="off"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 focus:bg-white transition-all">
+          <datalist id="datalist-bea-students">
+            <!-- Diisi dinamis dengan daftar nama siswa aktif -->
+          </datalist>
+          <p id="bea-add-student-hint" class="text-[11px] text-emerald-700 font-bold mt-1.5 hidden"></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NISN*:</label>
+            <input type="text" id="bea-add-nisn" maxlength="10" required placeholder="009..."
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kelas / Rombel*:</label>
+            <input type="text" id="bea-add-kelas" required placeholder="Contoh: VII-A"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nominal Bantuan (Rp / Semester)*:</label>
+          <input type="number" id="bea-add-nominal" required value="1500000"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Evaluasi / Dasar Rekomendasi BK:</label>
+          <textarea id="bea-add-evaluasi" rows="2" placeholder="Catatan capaian prestasi atau verifikasi SKTM BAZNAS"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeAddBeasiswaModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Simpan Penerima
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM EDIT PENERIMA BEASISWA (BS-EDIT)
+       ======================================================== -->
+  <div id="modal-edit-beasiswa" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeEditBeasiswaModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase">
+            Edit Data Bantuan
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Perbarui Data Penerima Beasiswa</h3>
+        </div>
+        <button onclick="closeEditBeasiswaModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-edit-beasiswa" class="space-y-3.5 text-xs font-medium">
+        <input type="hidden" id="bea-edit-id">
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Pilar / Kategori Beasiswa*:</label>
+          <select id="bea-edit-kategori"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+            <!-- Diisi dinamis via JS -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Lengkap Siswa*:</label>
+          <input type="text" id="bea-edit-nama" list="datalist-bea-students" required placeholder="Nama siswa penerima" autocomplete="off"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 focus:bg-white transition-all">
+          <p id="bea-edit-student-hint" class="text-[11px] text-emerald-700 font-bold mt-1.5 hidden"></p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NISN*:</label>
+            <input type="text" id="bea-edit-nisn" maxlength="10" required placeholder="009..."
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kelas / Rombel*:</label>
+            <input type="text" id="bea-edit-kelas" required placeholder="Contoh: VII-A"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nominal Bantuan (Rp / Semester)*:</label>
+            <input type="number" id="bea-edit-nominal" required
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Status Penyaluran*:</label>
+            <select id="bea-edit-status"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+              <option value="Proses Verifikasi">Proses Verifikasi</option>
+              <option value="Siap Disalurkan">Siap Disalurkan</option>
+              <option value="Tersalurkan">Tersalurkan</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tanggal Pencairan / Penyaluran:</label>
+          <input type="date" id="bea-edit-tgl-pencairan" onclick="this.showPicker && this.showPicker()"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500 font-medium text-slate-800 cursor-pointer">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Evaluasi / Dasar Rekomendasi BK:</label>
+          <textarea id="bea-edit-evaluasi" rows="2" placeholder="Catatan capaian prestasi atau verifikasi SKTM BAZNAS"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-100">
+          <button type="button" onclick="closeEditBeasiswaModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md flex items-center space-x-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Simpan Perubahan</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH PROGRAM BEASISWA BARU (CUSTOM PILAR)
+       ======================================================== -->
+  <div id="modal-add-beasiswa-pillar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddBeasiswaPillarModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800 uppercase">
+            Program Kustom
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Tambah Program Beasiswa Baru</h3>
+        </div>
+        <button onclick="closeAddBeasiswaPillarModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-beasiswa-pillar" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Program Beasiswa*:</label>
+          <input type="text" id="pillar-add-nama" required placeholder="Contoh: Beasiswa Tahfidz Al-Qur'an"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-600">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Pagu Total Alokasi (Rp)*:</label>
+            <input type="number" id="pillar-add-alokasi" required value="10000000" min="0" step="500000"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Warna Badge / Tema:</label>
+            <select id="pillar-add-warna"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-600">
+              <option value="emerald">Hijau (Emerald)</option>
+              <option value="blue">Biru (Blue)</option>
+              <option value="amber">Kuning (Amber)</option>
+              <option value="purple">Ungu (Purple)</option>
+              <option value="rose">Merah (Rose)</option>
+              <option value="sky">Sian (Sky)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Deskripsi / Kriteria Beasiswa*:</label>
+          <textarea id="pillar-add-deskripsi" rows="3" required placeholder="Keterangan sasaran penerima, kriteria seleksi, atau sumber dana..."
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-600"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-100">
+          <button type="button" onclick="closeAddBeasiswaPillarModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md flex items-center space-x-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Simpan Program</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM EDIT PROGRAM BEASISWA (EDIT PILAR)
+       ======================================================== -->
+  <div id="modal-edit-beasiswa-pillar" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeEditBeasiswaPillarModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 uppercase">
+            Edit Program
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Perbarui Program Beasiswa</h3>
+        </div>
+        <button onclick="closeEditBeasiswaPillarModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-edit-beasiswa-pillar" class="space-y-3.5 text-xs font-medium">
+        <input type="hidden" id="pillar-edit-id">
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Program Beasiswa*:</label>
+          <input type="text" id="pillar-edit-nama" required placeholder="Nama program beasiswa"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Pagu Total Alokasi (Rp)*:</label>
+            <input type="number" id="pillar-edit-alokasi" required min="0" step="500000"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Warna Badge / Tema:</label>
+            <select id="pillar-edit-warna"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500">
+              <option value="emerald">Hijau (Emerald)</option>
+              <option value="blue">Biru (Blue)</option>
+              <option value="amber">Kuning (Amber)</option>
+              <option value="purple">Ungu (Purple)</option>
+              <option value="rose">Merah (Rose)</option>
+              <option value="sky">Sian (Sky)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Deskripsi / Kriteria Beasiswa*:</label>
+          <textarea id="pillar-edit-deskripsi" rows="3" required placeholder="Deskripsi program beasiswa..."
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-100">
+          <button type="button" onclick="closeEditBeasiswaPillarModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md flex items-center space-x-1.5">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Simpan Perubahan</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: OTENTIKASI & GANTI PENGGUNA (MODUL 0 / LG-01)
+       ======================================================== -->
+  <div id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAuthModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="text-center pb-4 border-b border-slate-100 mb-4">
+        <div
+          class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mx-auto mb-2 shadow-md">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-base font-extrabold text-slate-900">Beralih Pengguna / Login</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Pilih akun staf untuk simulasi hak wewenang.</p>
+      </div>
+
+      <div class="space-y-2.5" id="auth-users-list">
+        <!-- Diisi dinamis -->
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 mt-4 text-center">
+        <button onclick="closeAuthModal()"
+          class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl">
+          Tutup Dialog
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH / EDIT TINGKAT KELAS KUSTOM
+       ======================================================== -->
+  <div id="modal-add-tingkat" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddTingkatModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Konfigurasi Akademik
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900" id="modal-tingkat-title">Tambah Tingkat Kelas Baru</h3>
+        </div>
+        <button onclick="closeAddTingkatModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-tingkat" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kode Tingkat (Singkat)*:</label>
+          <input type="text" id="tkt-add-kode" required placeholder="Contoh: VII, VIII, IX, atau X"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Tingkat Lengkap*:</label>
+          <input type="text" id="tkt-add-nama" required placeholder="Contoh: Kelas VII"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Fase Kurikulum*:</label>
+          <input type="text" id="tkt-add-fase" required value="Fase D" placeholder="Contoh: Fase D (Kurikulum Merdeka)"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Deskripsi / Keterangan:</label>
+          <input type="text" id="tkt-add-deskripsi" placeholder="Tingkat pertama Tsanawiyah"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeAddTingkatModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit" id="btn-submit-tingkat"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Simpan Tingkat
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH / EDIT ROMBEL KELAS KUSTOM
+       ======================================================== -->
+  <div id="modal-add-rombel" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddRombelModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Konfigurasi Rombel
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900" id="modal-rombel-title">Tambah Rombel Belajar Baru</h3>
+        </div>
+        <button onclick="closeAddRombelModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-rombel" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tingkat Jenjang*:</label>
+          <select id="rmb-add-tingkat" required
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+            <!-- Diisi dinamis dari tingkatList -->
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kode Rombel*:</label>
+            <input type="text" id="rmb-add-kode" required placeholder="Contoh: VII-D"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kapasitas Maksimal:</label>
+            <input type="number" id="rmb-add-kapasitas" value="36" min="1" max="50"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Rombongan Belajar*:</label>
+          <input type="text" id="rmb-add-nama" required placeholder="Contoh: VII-D Reguler atau VII-E Tahfidz"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Wali Kelas:</label>
+          <input type="text" id="rmb-add-wali" placeholder="Contoh: Ustadz Ahmad Fauzi, S.Pd"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Fokus Capaian / Program Khusus:</label>
+          <input type="text" id="rmb-add-fokus" placeholder="Contoh: Tahfidz Juz 30 & Bahasa Arab"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div class="pt-3 flex items-center justify-between">
+          <button type="button" id="btn-delete-rombel-modal" onclick="deleteRombelFromModal()"
+            class="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs hidden flex items-center space-x-1.5 border border-rose-200 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Hapus Rombel</span>
+          </button>
+          <div class="flex items-center space-x-2 ml-auto">
+            <button type="button" onclick="closeAddRombelModal()"
+              class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+              Batal
+            </button>
+            <button type="submit" id="btn-submit-rombel"
+              class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+              Simpan Rombel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH ROMBEL UNGGULAN
+       ======================================================== -->
+  <div id="modal-add-rombel-unggulan" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAddRombelUnggulanModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Program Khusus
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Tambah Rombel Unggulan</h3>
+        </div>
+        <button onclick="closeAddRombelUnggulanModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-new-rombel-unggulan" onsubmit="handleAddRombelUnggulanSubmit(event)"
+        class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Pilih Rombongan Belajar*:</label>
+          <select id="u-add-rombel-select" required onchange="handleSelectRombelUnggulanChange(this.value)"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+            <!-- Diisi dinamis -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Label / Nama Program Unggulan*:</label>
+          <input type="text" id="u-add-nama" required placeholder="Contoh: Kelas VII-A Unggulan"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Pembina / Wali:</label>
+          <input type="text" id="u-add-wali" placeholder="Contoh: Ustadz M. Ridwan, S.Ag"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Fokus Capaian / Kurikulum Khusus:</label>
+          <input type="text" id="u-add-fokus" placeholder="Contoh: Tahsin & Tahfidz Al-Qur'an 30 Juz"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeAddRombelUnggulanModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Simpan Rombel Unggulan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH / EDIT TAHUN AKADEMIK
+       ======================================================== -->
+  <div id="modal-academic-year" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeAcademicYearModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Kalender Akademik
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900" id="modal-academic-year-title">Tambah Tahun Pelajaran Baru
+          </h3>
+        </div>
+        <button onclick="closeAcademicYearModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-academic-year" class="space-y-3.5 text-xs font-medium">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tahun Pelajaran*:</label>
+            <input type="text" id="ay-input-tahun" required placeholder="Contoh: 2025/2026"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Semester*:</label>
+            <select id="ay-input-semester" required
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+              <option value="Ganjil">Ganjil</option>
+              <option value="Genap">Genap</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tanggal Mulai Efektif*:</label>
+            <input type="date" id="ay-input-mulai" required onclick="this.showPicker && this.showPicker()"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tanggal Selesai Efektif*:</label>
+            <input type="date" id="ay-input-selesai" required onclick="this.showPicker && this.showPicker()"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Batas Kunci Nilai (Cut-Off):</label>
+            <input type="date" id="ay-input-kunci" onclick="this.showPicker && this.showPicker()"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Jadwal Pembagian Rapor:</label>
+            <input type="date" id="ay-input-rapor" onclick="this.showPicker && this.showPicker()"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-medium text-slate-800 cursor-pointer">
+          </div>
+        </div>
+
+        <div id="ay-data-option-container">
+          <label class="block font-bold text-slate-700 mb-1">Opsi Inisialisasi Data Siswa:</label>
+          <select id="ay-input-data-mode"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+            <option value="copy">Salin Data Siswa & Rombel dari Tahun Aktif Saat Ini</option>
+            <option value="fresh">Mulai Tahun Ajaran Bersih (Tanpa Siswa / Kosong)</option>
+          </select>
+          <p class="text-[10px] text-slate-400 mt-1">
+            Data siswa, mutasi, dan statistik disimpan secara independen untuk tiap tahun ajaran.
+          </p>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeAcademicYearModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit" id="btn-submit-academic-year"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Simpan Konfigurasi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: FORM TAMBAH / EDIT PENGGUNA & HAK AKSES
+       ======================================================== -->
+  <div id="modal-user" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeUserModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Pengguna SIDASI
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900" id="modal-user-title">Tambah Pengguna Baru</h3>
+        </div>
+        <button onclick="closeUserModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-user" class="space-y-3.5 text-xs font-medium">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Lengkap & Gelar*:</label>
+          <input type="text" id="usr-input-nama" required placeholder="Contoh: Hj. Siti Rahmawati, S.Pd"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Username Login*:</label>
+            <input type="text" id="usr-input-username" required placeholder="Contoh: sitirahmawati"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kata Sandi (Password):</label>
+            <input type="text" id="usr-input-password" placeholder="Default: 123"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">NIP / NUPTK / ID Pegawai:</label>
+            <input type="text" id="usr-input-nip" placeholder="Contoh: 197804122005012004"
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Status Akun*:</label>
+            <select id="usr-input-status" required
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+              <option value="Aktif">Aktif</option>
+              <option value="Non-Aktif">Non-Aktif</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Peran (Role)*:</label>
+          <input type="text" id="usr-input-peran" list="role-options" required placeholder="Pilih atau ketik peran"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600">
+          <datalist id="role-options">
+            <option value="Kepala Madrasah"></option>
+            <option value="Kepala Tata Usaha"></option>
+            <option value="Operator Siswa & Buku Induk"></option>
+            <option value="Guru BK / Koordinator Beasiswa"></option>
+            <option value="Wali Kelas"></option>
+            <option value="Bendahara Madrasah"></option>
+            <option value="Staf Tata Usaha"></option>
+            <option value="Administrator SIDASI"></option>
+          </datalist>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Cakupan Hak Akses*:</label>
+          <textarea id="usr-input-akses" rows="2" required
+            placeholder="Contoh: Verifikasi, Ekspor Data, Penerbitan Berkas & Konfigurasi"
+            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-600"></textarea>
+          <p class="text-[10px] text-slate-400 mt-1">Uraikan izin dan ruang lingkup tugas akun ini dalam SIDASI (Sistem
+            Informasi Data Siswa).</p>
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2">
+          <button type="button" onclick="closeUserModal()"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">
+            Batal
+          </button>
+          <button type="submit" id="btn-submit-user"
+            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md">
+            Simpan Pengguna
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: IMPORT DATA SISWA DARI EXCEL (SHEETJS)
+       ======================================================== -->
+  <div id="modal-import-excel" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeImportExcelModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 z-10 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <span
+            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase">
+            Integrasi Microsoft Excel
+          </span>
+          <h3 class="text-base font-extrabold text-slate-900">Import Data Siswa dari Berkas Excel</h3>
+        </div>
+        <button onclick="closeImportExcelModal()"
+          class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Panduan & Download Template -->
+      <div
+        class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div class="space-y-1">
+          <p class="font-extrabold text-emerald-950 flex items-center space-x-1.5">
+            <i data-lucide="info" class="w-4 h-4 text-emerald-700"></i>
+            <span>Gunakan data lama atau format template resmi</span>
+          </p>
+          <p class="text-slate-600 leading-relaxed text-[11px]">
+            Sistem mendukung format kolom fleksibel (.xlsx, .xls, .csv). Unduh template jika Anda ingin menyusun data
+            dari awal.
+          </p>
+        </div>
+        <button type="button" onclick="downloadStudentExcelTemplate()"
+          class="px-3 py-1.5 bg-white border border-emerald-300 text-emerald-800 hover:bg-emerald-100 rounded-lg font-bold text-xs shadow-sm transition-all flex items-center space-x-1.5 whitespace-nowrap">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600"></i>
+          <span>Unduh Template Excel</span>
+        </button>
+      </div>
+
+      <!-- Area Upload File (Drag & Drop / Picker) -->
+      <div class="space-y-2 mb-4">
+        <label class="block font-bold text-slate-700 text-xs">Pilih Berkas Excel (.xlsx, .xls, .csv):</label>
+        <div id="dropzone-excel" onclick="document.getElementById('input-excel-file').click()"
+          class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/40 rounded-2xl p-6 text-center cursor-pointer transition-all">
+          <input type="file" id="input-excel-file" accept=".xlsx, .xls, .csv" class="hidden"
+            onchange="handleExcelFileSelect(event)">
+          <div class="flex flex-col items-center justify-center space-y-2">
+            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="file-spreadsheet" class="w-6 h-6"></i>
+            </div>
+            <div id="excel-file-info">
+              <p class="text-xs font-bold text-slate-800">Klik untuk memilih berkas atau seret berkas ke sini</p>
+              <p class="text-[11px] text-slate-400">Mendukung format Microsoft Excel (.xlsx, .xls) atau berkas CSV</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opsi Mode Import -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs">
+        <label
+          class="p-3 rounded-xl border border-slate-200 cursor-pointer flex items-start space-x-2.5 hover:bg-slate-50 transition-colors">
+          <input type="radio" name="import-mode" value="append" checked
+            class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+          <div>
+            <span class="font-bold text-slate-800 block">Tambahkan ke Data yang Ada</span>
+            <span class="text-[11px] text-slate-500">Siswa baru dari Excel digabungkan dengan data siswa yang sudah ada
+              di sistem.</span>
+          </div>
+        </label>
+        <label
+          class="p-3 rounded-xl border border-slate-200 cursor-pointer flex items-start space-x-2.5 hover:bg-slate-50 transition-colors">
+          <input type="radio" name="import-mode" value="replace" class="mt-0.5 text-emerald-600 focus:ring-emerald-500">
+          <div>
+            <span class="font-bold text-slate-800 block">Timpa / Gantikan Semua Data</span>
+            <span class="text-[11px] text-slate-500">Seluruh data siswa saat ini akan digantikan penuh oleh data dari
+              berkas Excel baru.</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Area Pratinjau (Preview) Data -->
+      <div id="import-preview-container" class="hidden space-y-3 mb-4">
+        <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+          <span class="font-extrabold text-slate-900" id="preview-summary-text">Pratinjau Data Terdeteksi</span>
+          <span
+            class="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"
+            id="preview-badge-count">0 Data</span>
+        </div>
+        <div class="overflow-x-auto max-h-48 rounded-xl border border-slate-200">
+          <table class="w-full text-left text-[11px]">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-extrabold sticky top-0">
+                <th class="py-2 px-3 whitespace-nowrap">No</th>
+                <th class="py-2 px-3 whitespace-nowrap">NISN</th>
+                <th class="py-2 px-3 whitespace-nowrap">Nama Lengkap</th>
+                <th class="py-2 px-3 whitespace-nowrap text-center">JK</th>
+                <th class="py-2 px-3 whitespace-nowrap text-center">Tingkat</th>
+                <th class="py-2 px-3 whitespace-nowrap">Rombel</th>
+                <th class="py-2 px-3 whitespace-nowrap">Domisili</th>
+                <th class="py-2 px-3 whitespace-nowrap">Wali / HP</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="import-preview-tbody">
+              <!-- Diisi dinamis via JS -->
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[10px] text-slate-400 italic">* Menampilkan 5 baris pertama sebagai sampel verifikasi sebelum
+          dimasukkan ke basis data.</p>
+      </div>
+
+      <!-- Tombol Aksi Modal -->
+      <div class="pt-3 flex items-center justify-between border-t border-slate-100">
+        <button type="button" onclick="closeImportExcelModal()"
+          class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+          Batal
+        </button>
+        <button type="button" id="btn-execute-import" onclick="executeExcelImport()" disabled
+          class="px-5 py-2 bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center space-x-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span id="btn-execute-import-label">Pilih Berkas Dulu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL: KONFIRMASI HAPUS SELURUH BASIS DATA
+       ======================================================== -->
+  <div id="modal-wipe-database" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+    <div class="absolute inset-0 backdrop-blur-custom" onclick="closeWipeDatabaseModal()"></div>
+
+    <div
+      class="relative bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-rose-100 z-10 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start space-x-3.5 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 shadow-inner">
+          <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 uppercase tracking-wider">
+              Konfirmasi Validasi
+            </span>
+            <button type="button" onclick="closeWipeDatabaseModal()"
+              class="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <h3 class="text-base font-extrabold text-slate-900 mt-1">Hapus Semua Basis Data?</h3>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-600 leading-relaxed bg-rose-50/70 p-4 rounded-xl border border-rose-200">
+        <p class="font-bold text-rose-950">
+          Apakah Anda yakin ingin menghapus seluruh data di sistem SIDASI? Tindakan ini akan mengosongkan:
+        </p>
+        <ul class="list-disc list-inside space-y-1 text-rose-900/90 pl-1">
+          <li>Seluruh data siswa di Buku Induk Digital</li>
+          <li>Seluruh arsip riwayat mutasi siswa (masuk & keluar)</li>
+          <li>Seluruh data penerima program beasiswa</li>
+          <li>Daftar rombongan belajar (rombel) & statistik keterisian</li>
+          <li>Arsip data kesiswaan tahun akademik</li>
+        </ul>
+        <div class="pt-2 border-t border-rose-200 text-[11px] text-emerald-800 font-semibold flex items-center space-x-1.5">
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+          <span>Akun login administrator (<code class="bg-emerald-100/90 px-1 py-0.5 rounded font-mono">admin</code>) tetap aman & aktif.</span>
+        </div>
+      </div>
+
+      <div class="pt-5 flex items-center justify-end space-x-3">
+        <button type="button" onclick="closeWipeDatabaseModal()"
+          class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center space-x-1.5">
+          <i data-lucide="x" class="w-4 h-4"></i>
+          <span>Batal</span>
+        </button>
+        <button type="button" id="btn-confirm-wipe-database" onclick="executeWipeDatabase()"
+          class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-rose-600/30 flex items-center space-x-2">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+          <span>Ya, Hapus Semua Data</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       DOKUMEN CETAK STANDAR A4 (HANYA DITAMPILKAN SAAT PRINT)
+       ======================================================== -->
+  <div id="printable-area" class="hidden">
+    <!-- Konten cetak dinamis diisi via JavaScript sebelum window.print() -->
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast"
+    class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div
+      class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs font-bold border border-slate-700"
+      id="toast-inner">
+      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+      <span id="toast-message">Pemberitahuan</span>
+    </div>
+  </div>
+
+  <!-- Script Libraries & Aplikasi -->
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
